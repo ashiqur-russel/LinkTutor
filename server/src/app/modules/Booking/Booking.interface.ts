@@ -1,8 +1,5 @@
 import mongoose, { Document } from "mongoose";
 
-/* ============================================================
-   Enums & Constants
-   ============================================================ */
 export enum BookingStatus {
   ACTIVE = "active",
   COMPLETED = "completed",

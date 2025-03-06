@@ -1,15 +1,23 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, Model } from "mongoose";
+import { IStudent } from "./Student.interface";
+import { UserRole } from "../User/User.interface";
+import User from "../User/User.model";
 
-export interface IStudentModel extends Document {
-  name: string;
-  // add more fields here
-}
-
-const StudentSchema = new Schema<IStudentModel>({
+const GuardianSchema: Schema = new Schema({
   name: { type: String, required: true },
-  // add more fields here
+  phone: { type: String, required: true },
+  email: { type: String },
+  relationship: { type: String },
 });
 
-const StudentModel = model<IStudentModel>('Student', StudentSchema);
+const StudentSchema: Schema = new Schema({
+  grade: { type: String, required: true },
+  guardian: { type: GuardianSchema, required: true },
+});
 
-export default StudentModel;
+const Student: Model<IStudent> = User.discriminator<IStudent>(
+  UserRole.STUDENT,
+  StudentSchema
+);
+
+export default Student;
