@@ -1,15 +1,24 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Model, Schema } from "mongoose";
+import { IReview } from "./Review.interface";
 
-export interface IReviewModel extends Document {
-  name: string;
-  // add more fields here
-}
-
-const ReviewSchema = new Schema<IReviewModel>({
-  name: { type: String, required: true },
-  // add more fields here
+const ReviewSchema: Schema<IReview> = new Schema({
+  tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
+  booking: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Booking",
+    required: true,
+  },
+  review: { type: String, required: true },
+  rating: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const ReviewModel = model<IReviewModel>('Review', ReviewSchema);
-
-export default ReviewModel;
+export const Review: Model<IReview> = mongoose.model<IReview>(
+  "Review",
+  ReviewSchema
+);

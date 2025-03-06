@@ -1,15 +1,59 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, Model } from "mongoose";
+import {
+  BookingStatus,
+  IBooking,
+  IBookingSession,
+  SessionStatus,
+} from "./Booking.interface";
 
-export interface IBookingModel extends Document {
-  name: string;
-  // add more fields here
-}
-
-const BookingSchema = new Schema<IBookingModel>({
-  name: { type: String, required: true },
-  // add more fields here
+// Sub-schema for booking sessions.
+const BookingSessionSchema: Schema<IBookingSession> = new Schema({
+  sessionDate: { type: Date, required: true },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
+  duration: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: Object.values(SessionStatus),
+    default: SessionStatus.PENDING,
+  },
 });
 
-const BookingModel = model<IBookingModel>('Booking', BookingSchema);
+// Booking schema.
+const BookingSchema: Schema<IBooking> = new Schema({
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
+  tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
+  packageStartDate: { type: Date, required: true },
+  packageEndDate: { type: Date, required: true },
+  packageHours: { type: Number, required: true },
+  sessions: [BookingSessionSchema],
+  status: {
+    type: String,
+    enum: Object.values(BookingStatus),
+    default: BookingStatus.ACTIVE,
+  },
+  isBookingCancelled: { type: Boolean, default: false },
+  bookingCancelledBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
+  cancellationReason: { type: String, default: null },
+  cancellationTime: { type: Date, default: null },
+  requestReference: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Request",
+    default: null,
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
 
-export default BookingModel;
+export const Booking: Model<IBooking> = mongoose.model<IBooking>(
+  "Booking",
+  BookingSchema
+);

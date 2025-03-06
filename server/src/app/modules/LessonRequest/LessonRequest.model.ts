@@ -1,15 +1,21 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, Model } from "mongoose";
+import { ILessonRequest } from "./LessonRequest.interface";
 
-export interface ILessonRequestModel extends Document {
-  name: string;
-  // add more fields here
-}
-
-const LessonRequestSchema = new Schema<ILessonRequestModel>({
-  name: { type: String, required: true },
-  // add more fields here
+const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
+  tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
+  subject: { type: String, required: true },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
+  requestAccepted: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const LessonRequestModel = model<ILessonRequestModel>('LessonRequest', LessonRequestSchema);
+export const LessonRequestModel: Model<ILessonRequest> =
+  mongoose.model<ILessonRequest>("Request", LessonRequestSchema);
 
 export default LessonRequestModel;
