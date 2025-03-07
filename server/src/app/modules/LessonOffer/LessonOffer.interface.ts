@@ -1,4 +1,15 @@
-export interface ILessonOffer {
-  id: string;
-  name: string;
+// lessonOffer.interface.ts
+import { Document, Types } from "mongoose";
+
+export interface ILessonOffer extends Document {
+  tutorId: Types.ObjectId;
+  studentId: Types.ObjectId;
+  subject: string;
+  duration: string | number;
+  sessionDate: Date;
+  sessionStart: Date;
+  sessionEnd: Date;
+  isAccepted: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

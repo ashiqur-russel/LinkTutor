@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const BookingValidation = {
+export const bookingValidation = {
   create: z.object({
     name: z.string().min(1, 'Name is required'),
   }),

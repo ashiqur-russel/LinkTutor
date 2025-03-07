@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { BookingService } from './Booking.service';
+import { bookingService } from './booking.service';
 
-export const BookingController = {
+export const bookingController = {
   async getAll(req: Request, res: Response) {
-    const data = await BookingService.getAll();
+    const data = await bookingService.getAll();
     res.json(data);
   },
 };

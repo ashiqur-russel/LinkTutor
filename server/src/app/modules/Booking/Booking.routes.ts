@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { BookingController } from './Booking.controller';
+import { bookingController } from './booking.controller';
 
 const router = Router();
 
 // Define routes
-router.get('/', BookingController.getAll);
+router.get('/', bookingController.getAll);
 
 export default router;

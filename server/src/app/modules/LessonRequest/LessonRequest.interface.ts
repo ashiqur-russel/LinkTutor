@@ -1,11 +1,14 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface ILessonRequest extends Document {
-  student: mongoose.Types.ObjectId;
-  tutor: mongoose.Types.ObjectId;
+  tutorId: Types.ObjectId;
+  studentId: Types.ObjectId;
   subject: string;
-  startTime: Date;
-  endTime: Date;
-  requestAccepted: boolean;
-  createdAt: Date;
+  duration: string | number;
+  sessionDate: Date;
+  sessionStart: Date;
+  sessionEnd: Date;
+  isAccepted: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

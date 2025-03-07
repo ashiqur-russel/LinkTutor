@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { LessonOfferService } from './LessonOffer.service';
+import { lessonOfferService } from './lessonOffer.service';
 
-export const LessonOfferController = {
+export const lessonOfferController = {
   async getAll(req: Request, res: Response) {
-    const data = await LessonOfferService.getAll();
+    const data = await lessonOfferService.getAll();
     res.json(data);
   },
 };

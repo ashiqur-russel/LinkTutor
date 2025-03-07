@@ -1,21 +1,26 @@
 import mongoose, { Schema, Model } from "mongoose";
-import { ILessonRequest } from "./LessonRequest.interface";
+import { ILessonRequest } from "./lessonRequest.interface";
 
 const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
-  student: {
+  tutorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",
+    ref: "User",
     required: true,
   },
-  tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   subject: { type: String, required: true },
-  startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
-  requestAccepted: { type: Boolean, default: false },
+  duration: { type: Schema.Types.Mixed, required: true },
+  sessionDate: { type: Date, required: true },
+  sessionStart: { type: Date, required: true },
+  sessionEnd: { type: Date, required: true },
+  isAccepted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
-export const LessonRequestModel: Model<ILessonRequest> =
-  mongoose.model<ILessonRequest>("Request", LessonRequestSchema);
-
-export default LessonRequestModel;
+export const LessonRequest: Model<ILessonRequest> =
+  mongoose.model<ILessonRequest>("LessonRequest", LessonRequestSchema);

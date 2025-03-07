@@ -1,52 +1,48 @@
+// booking.model.ts
 import mongoose, { Schema, Model } from "mongoose";
-import {
-  BookingStatus,
-  IBooking,
-  IBookingSession,
-  SessionStatus,
-} from "./Booking.interface";
+import { IBooking } from "./booking.interface";
+import { BookingStatus, CanceledBy } from "./booking.constant";
 
-// Sub-schema for booking sessions.
-const BookingSessionSchema: Schema<IBookingSession> = new Schema({
-  sessionDate: { type: Date, required: true },
-  startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
-  duration: { type: Number, required: true },
-  status: {
-    type: String,
-    enum: Object.values(SessionStatus),
-    default: SessionStatus.PENDING,
-  },
-});
-
-// Booking schema.
 const BookingSchema: Schema<IBooking> = new Schema({
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",
-    required: true,
-  },
-  tutor: { type: mongoose.Schema.Types.ObjectId, ref: "Tutor", required: true },
-  packageStartDate: { type: Date, required: true },
-  packageEndDate: { type: Date, required: true },
-  packageHours: { type: Number, required: true },
-  sessions: [BookingSessionSchema],
-  status: {
-    type: String,
-    enum: Object.values(BookingStatus),
-    default: BookingStatus.ACTIVE,
-  },
-  isBookingCancelled: { type: Boolean, default: false },
-  bookingCancelledBy: {
+  tutorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
+  },
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  lessonOfferId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "LessonOffer",
     default: null,
   },
-  cancellationReason: { type: String, default: null },
-  cancellationTime: { type: Date, default: null },
-  requestReference: {
+  lessonRequestId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Request",
+    ref: "LessonRequest",
+    default: null,
+  },
+  subject: { type: String, required: true },
+  sessionDate: { type: Date, required: true },
+  sessionStart: { type: Date },
+  sessionEnd: { type: Date },
+  isCancelled: { type: Boolean, default: false },
+  canceledBy: {
+    type: String,
+    enum: Object.values(CanceledBy),
+    default: CanceledBy.NONE,
+  },
+  cancelReason: { type: String, default: null },
+  bookingStatus: {
+    type: String,
+    enum: Object.values(BookingStatus),
+    default: BookingStatus.PENDING,
+  },
+  paymentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Payment",
     default: null,
   },
   createdAt: { type: Date, default: Date.now },
