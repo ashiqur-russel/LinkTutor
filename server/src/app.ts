@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import os from "os";
 import { StatusCodes } from "http-status-codes";
 import router from "./app/routes";
+import globalErrorHandler from "./app/middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -44,5 +45,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     },
   });
 });
+
+app.use(globalErrorHandler);
 
 export default app;
