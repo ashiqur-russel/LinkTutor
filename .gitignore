@@ -3,6 +3,7 @@ client/node_modules
 client/scripts
 server/node_modules
 server/.env
+.env
 # Ignore logs
 *.log
 
