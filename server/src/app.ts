@@ -3,6 +3,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import os from "os";
 import { StatusCodes } from "http-status-codes";
+import router from "./app/routes";
 
 const app: Application = express();
 
@@ -11,6 +12,8 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/v1", router);
 
 // Test route
 app.get("/", (req: Request, res: Response, next: NextFunction) => {

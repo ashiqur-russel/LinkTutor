@@ -1,15 +1,21 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema } from "mongoose";
+import { ITutor } from "./Tutor.interface";
+import { UserRole } from "../User/User.interface";
+import User from "../User/User.model";
+import { DAYS_OF_WEEK } from "../Tutor/Tutor.constant";
 
-export interface ITutorModel extends Document {
-  name: string;
-  // add more fields here
-}
-
-const TutorSchema = new Schema<ITutorModel>({
-  name: { type: String, required: true },
-  // add more fields here
+const TutorSchema: Schema<ITutor> = new Schema({
+  availability: [
+    {
+      day: { type: String, enum: DAYS_OF_WEEK, required: true },
+      startTime: { type: String, required: true },
+      endTime: { type: String, required: true },
+    },
+  ],
+  subjects: [{ type: String, required: true }],
+  hourRate: { type: Number, required: true },
 });
 
-const TutorModel = model<ITutorModel>('Tutor', TutorSchema);
+const Tutor = User.discriminator<ITutor>(UserRole.TUTOR, TutorSchema);
 
-export default TutorModel;
+export default Tutor;
