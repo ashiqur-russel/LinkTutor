@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export enum UserRole {
   STUDENT = "student",
   TUTOR = "tutor",
@@ -19,6 +21,18 @@ export interface IUser {
   role: UserRole;
   address: IAddress;
   phone?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  isActive: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface IUserDocument extends IUser, Document {}
+
+export interface IUserModel extends Model<IUserDocument> {
+  isPasswordMatched(
+    plainTextPassword: string,
+    hashedPassword: string
+  ): Promise<boolean>;
+  isUserExistsByEmail(email: string): Promise<IUserDocument | null>;
+  checkUserExist(userId: string): Promise<IUserDocument>;
 }

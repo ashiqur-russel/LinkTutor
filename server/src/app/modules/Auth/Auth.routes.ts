@@ -4,6 +4,6 @@ import { AuthController } from "./Auth.controller";
 const router = Router();
 
 // Define routes
-router.get("/", AuthController.getAll);
+router.post("/login", AuthController.loginUser);
 
 export const AuthRoutes = router;

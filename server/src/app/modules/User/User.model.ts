@@ -1,5 +1,5 @@
-import mongoose, { Schema, Model } from "mongoose";
-import { IUser, UserRole } from "./User.interface";
+import mongoose, { Schema } from "mongoose";
+import { IUserDocument, IUserModel, UserRole } from "./User.interface";
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
@@ -13,7 +13,12 @@ const AddressSchema: Schema = new Schema({
   country: { type: String },
 });
 
-const UserSchema: Schema<IUser> = new Schema(
+/**
+ * Note the generic types:
+ *  1. IUserDocument -> shape of each document
+ *  2. IUserModel    -> shape of the model (statics)
+ */
+const UserSchema = new Schema<IUserDocument, IUserModel>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -21,6 +26,7 @@ const UserSchema: Schema<IUser> = new Schema(
     role: { type: String, enum: Object.values(UserRole), required: true },
     address: { type: AddressSchema, required: true },
     phone: { type: String },
+    isActive: { type: Boolean, default: true },
   },
   {
     discriminatorKey: "role",
@@ -28,14 +34,14 @@ const UserSchema: Schema<IUser> = new Schema(
   }
 );
 
-UserSchema.pre("save", async function (next) {
-  const user = this;
+/* ------------------ Mongoose Hooks ------------------ */
 
+UserSchema.pre("save", async function (next) {
+  const user = this; // 'this' is an IUserDocument
   user.password = await bcrypt.hash(
     user.password,
     Number(config.bcrypt_salt_rounds)
   );
-
   next();
 });
 
@@ -44,12 +50,16 @@ UserSchema.post("save", function (doc, next) {
   next();
 });
 
+/* ------------------ toJSON Transform ------------------ */
+
 UserSchema.set("toJSON", {
   transform: (_doc, ret) => {
     delete ret.password;
     return ret;
   },
 });
+
+/* ------------------ Static Methods ------------------ */
 
 UserSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
@@ -59,7 +69,7 @@ UserSchema.statics.isPasswordMatched = async function (
 };
 
 UserSchema.statics.isUserExistsByEmail = async function (email: string) {
-  return await User.findOne({ email }).select("+password");
+  return this.findOne({ email }).select("+password");
 };
 
 UserSchema.statics.checkUserExist = async function (userId: string) {
@@ -76,5 +86,6 @@ UserSchema.statics.checkUserExist = async function (userId: string) {
   return existingUser;
 };
 
-const User: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
+const User = mongoose.model<IUserDocument, IUserModel>("User", UserSchema);
+
 export default User;
