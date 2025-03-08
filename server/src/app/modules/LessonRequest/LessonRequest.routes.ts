@@ -1,9 +1,11 @@
-import { Router } from 'express';
-import { lessonRequestController } from './lessonRequest.controller';
+import { Router } from "express";
+import { lessonRequestControllers } from "./lessonRequest.controller";
 
 const router = Router();
 
-// Define routes
-router.get('/', lessonRequestController.getAll);
+router.post(
+  "/create-lesson-request",
+  lessonRequestControllers.createLessonRequest
+);
 
-export default router;
+export const LssonRequestrRoutes = router;

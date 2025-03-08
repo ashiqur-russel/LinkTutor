@@ -29,10 +29,11 @@ export interface IUser {
 export interface IUserDocument extends IUser, Document {}
 
 export interface IUserModel extends Model<IUserDocument> {
+  checkUserExist(userId: any): Promise<IUserDocument | null>;
+
   isPasswordMatched(
     plainTextPassword: string,
     hashedPassword: string
   ): Promise<boolean>;
   isUserExistsByEmail(email: string): Promise<IUserDocument | null>;
-  checkUserExist(userId: string): Promise<IUserDocument>;
 }

@@ -73,6 +73,7 @@ UserSchema.statics.isUserExistsByEmail = async function (email: string) {
 };
 
 UserSchema.statics.checkUserExist = async function (userId: string) {
+  console.log("pre hoook==>", userId);
   const existingUser = await this.findById(userId);
 
   if (!existingUser) {
