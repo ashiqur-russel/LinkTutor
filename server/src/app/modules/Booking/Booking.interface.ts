@@ -1,6 +1,6 @@
 // booking.interface.ts
 import { Document, Types } from "mongoose";
-import { BookingStatus, CanceledBy } from "./booking.constant";
+import { BookingStatus, CanceledBy, PaymentStatus } from "./booking.constant";
 import { UserRole } from "../User/User.interface";
 
 interface ICheckTimeslotAvailability {
@@ -24,6 +24,7 @@ export interface IBooking extends Document {
   canceledBy?: CanceledBy;
   cancelReason?: string;
   bookingStatus?: BookingStatus;
+  paymentStatus?: PaymentStatus;
   paymentId?: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;

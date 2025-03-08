@@ -31,7 +31,7 @@ const BookingSchema: Schema<IBooking> = new Schema({
   canceledBy: {
     type: String,
     enum: Object.values(CanceledBy),
-    default: CanceledBy.NONE,
+    default: null,
   },
   cancelReason: { type: String, default: null },
   bookingStatus: {

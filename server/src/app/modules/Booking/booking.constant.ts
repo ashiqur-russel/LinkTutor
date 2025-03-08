@@ -1,12 +1,16 @@
 export enum BookingStatus {
   ACTIVE = "active",
-  CONFIRMED = "confirmed",
   COMPLETED = "completed",
-  CANCELED = "canceled",
+  CANCELLED = "cancelled",
 }
 
 export enum CanceledBy {
   STUDENT = "student",
   TUTOR = "tutor",
-  NONE = "none",
+}
+
+export enum PaymentStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  REFUNDED = "refnded",
 }
