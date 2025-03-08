@@ -43,7 +43,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 2. Convert sessionStart/sessionEnd to Date objects (UTC)
+  // Convert sessionStart/sessionEnd to Date objects (UTC)
   const sessionStart = new Date(payload.sessionStart);
   const sessionEnd = new Date(payload.sessionEnd);
 
@@ -63,7 +63,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 3. Check tutor’s weekday availability
+  // Check tutor’s weekday availability
   const requestedDate = new Date(payload.sessionDate);
   const requestedWeekday = getUtcWeekdayName(requestedDate);
 
@@ -77,13 +77,13 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // Convert availability to minutes from midnight (UTC)
-  const avStartMins = parseTimeToMinutes(dayAvailability.startTime); // e.g. "09:00" => 540
-  const avEndMins = parseTimeToMinutes(dayAvailability.endTime); // e.g. "11:00" => 660
+  // Convert availability to minutes from midnight (UTC) / e.g. "11:00" => 660
+  const avStartMins = parseTimeToMinutes(dayAvailability.startTime);
+  const avEndMins = parseTimeToMinutes(dayAvailability.endTime);
 
   // Convert the session times to total UTC minutes
-  const requestedStartMins = getUTCMinutes(sessionStart); // e.g. 540
-  const requestedEndMins = getUTCMinutes(sessionEnd); // e.g. 660
+  const requestedStartMins = getUTCMinutes(sessionStart);
+  const requestedEndMins = getUTCMinutes(sessionEnd);
 
   // If the requested time is outside the tutor's availability
   if (requestedStartMins < avStartMins || requestedEndMins > avEndMins) {
@@ -95,7 +95,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 4. Tutor must teach the requested subject
+  //  Tutor must teach the requested subject
   if (!tutorUser.subjects?.includes(payload.subject)) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -103,7 +103,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 5. Session must be exactly 1 or 2 hours (60 or 120 min)
+  // Session must be exactly 1 or 2 hours (60 or 120 min)
   const sessionDiffMins = requestedEndMins - requestedStartMins;
   if (sessionDiffMins !== 60 && sessionDiffMins !== 120) {
     throw new AppError(
@@ -193,9 +193,44 @@ const getMyLessonRequest = async (userId: string) => {
   }
 };
 
+/**
+ * Tutor declines a lesson request by ID.
+ * @param requestId The _id of the lesson request document
+ * TODO: Validate tutor should be matched witht he request tutorID
+ */
+const declineLessonRequest = async (requestId: string) => {
+  console.log("req id", requestId);
+  const request = await LessonRequest.findById(requestId);
+  console.log("req ", request);
+
+  if (!request) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
+  }
+
+  if (request.isDeclined) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "This request is already declined!"
+    );
+  }
+
+  if (request.isAccepted) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "Request is already accepted and cannot be declined!"
+    );
+  }
+
+  request.isDeclined = true;
+  await request.save();
+
+  return request;
+};
+
 export const LessonRequestServices = {
   createLessonRequest,
   getAllLessonRequests,
   getLessonRequestById,
   getMyLessonRequest,
+  declineLessonRequest,
 };

@@ -12,7 +12,7 @@ router.get("/", lessonRequestControllers.getAllLessonRequests);
 router.get("/:userId/my-request", lessonRequestControllers.getMyLessonRequest);
 router.post(
   "/:id/decline-request",
-  lessonRequestControllers.getMyLessonRequest
+  lessonRequestControllers.declineLessonRequest
 );
 
 export const LssonRequestrRoutes = router;

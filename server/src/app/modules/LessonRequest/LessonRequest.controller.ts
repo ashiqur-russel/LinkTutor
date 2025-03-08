@@ -45,8 +45,22 @@ export const getAllLessonRequests = catchAsync(
     });
   }
 );
+
+const declineLessonRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const updatedRequest = await LessonRequestServices.declineLessonRequest(id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Lesson request declined successfully!",
+    data: updatedRequest,
+  });
+});
 export const lessonRequestControllers = {
   createLessonRequest,
   getMyLessonRequest,
   getAllLessonRequests,
+  declineLessonRequest,
 };
