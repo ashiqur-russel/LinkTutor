@@ -18,4 +18,35 @@ export const createLessonRequest = catchAsync(
   }
 );
 
-export const lessonRequestControllers = { createLessonRequest };
+export const getMyLessonRequest = catchAsync(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    const data = await LessonRequestServices.getMyLessonRequest(userId);
+
+    sendResponse(res, {
+      statusCode: 201,
+      success: true,
+      message: "Lesson request fetched successfully",
+      data: data,
+    });
+  }
+);
+
+export const getAllLessonRequests = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = await LessonRequestServices.getAllLessonRequests();
+
+    sendResponse(res, {
+      statusCode: 201,
+      success: true,
+      message: "Lesson request fetched successfully",
+      data,
+    });
+  }
+);
+export const lessonRequestControllers = {
+  createLessonRequest,
+  getMyLessonRequest,
+  getAllLessonRequests,
+};

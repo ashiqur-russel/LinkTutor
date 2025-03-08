@@ -6,7 +6,6 @@ import { LessonRequest } from "./lessonRequest.model";
 import { UserRole } from "../User/User.interface";
 import User from "../User/User.model";
 import { checkTimeslotAvailability } from "../../utils/timeslot.utils";
-import { IStudent } from "../Student/Student.interface";
 
 const createLessonRequest = async (payload: ILessonRequest) => {
   // 1. Ensure the tutor exists and is active
@@ -81,7 +80,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 6. Validate duration (must be 1 or 2 hours)
+  //  Validate duration (must be 1 or 2 hours)
   const numericDuration = Number(payload.duration);
   if (numericDuration < 1 || numericDuration > 2) {
     throw new AppError(
@@ -90,7 +89,6 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 7. Create the LessonRequest
   const result = await LessonRequest.create(payload);
   return result;
 };
@@ -99,12 +97,27 @@ const getAllLessonRequests = async () => {
   return LessonRequest.find({});
 };
 
+const getMyLessonRequest = async (userId: string) => {
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User does not exist!");
+  }
+
+  if (user.role === UserRole.STUDENT) {
+    return await LessonRequest.find({ studentId: userId });
+  }
+  if (user.role === UserRole.TUTOR) {
+    return await LessonRequest.find({ tutorId: userId });
+  }
+};
+
 const getLessonRequestById = async (id: string) => {
-  return LessonRequest.findById(id);
+  console.log(id);
 };
 
 export const LessonRequestServices = {
   createLessonRequest,
   getAllLessonRequests,
   getLessonRequestById,
+  getMyLessonRequest,
 };
