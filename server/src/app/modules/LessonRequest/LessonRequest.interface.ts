@@ -8,7 +8,9 @@ export interface ILessonRequest extends Document {
   sessionDate: Date;
   sessionStart: Date;
   sessionEnd: Date;
-  isAccepted: boolean;
+  isAccepted?: boolean;
+  isDeclined?: boolean;
+  status: "pending" | "accepted" | "declined";
   createdAt?: Date;
   updatedAt?: Date;
 }
