@@ -10,5 +10,9 @@ router.post(
 router.get("/", lessonRequestControllers.getAllLessonRequests);
 
 router.get("/:userId/my-request", lessonRequestControllers.getMyLessonRequest);
+router.post(
+  "/:id/decline-request",
+  lessonRequestControllers.getMyLessonRequest
+);
 
 export const LssonRequestrRoutes = router;

@@ -18,31 +18,14 @@ import { format } from "date-fns";
 
 /**
  * createLessonRequest:
- * 1. Ensures the tutor and student exist and are active.
- * 2. Validates the requested date/time is in the future and within the tutor’s availability.
- * 3. Checks for overlapping or duplicate requests.
- * 4. Allows only 1-hour or 2-hour sessions (exactly 60 or 120 minutes).
+ * 1. Tutor & student must exist and be active.
+ * 2. Requested timeslot must be in the future and within tutor's availability.
+ * 3. Only 1-hour or 2-hour sessions are allowed (60 or 120 minutes).
+ * 4. If any existing request (pending, accepted, or declined) overlaps the same timeslot,
+ *    block the new request.
  */
 const createLessonRequest = async (payload: ILessonRequest) => {
-  // Debug prints for verifying date/time
-  const testDate = new Date("2025-03-08T00:00:00.000Z");
-  console.log(
-    "DEBUG testDate => UTC:",
-    testDate.toUTCString(),
-    "Local:",
-    testDate.toString()
-  );
-
-  console.log("DEBUG sessionDate =>", payload.sessionDate);
-  console.log(
-    "DEBUG sessionDate toUTCString =>",
-    new Date(payload.sessionDate).toUTCString()
-  );
-  console.log(
-    "DEBUG sessionDate getUTCDay =>",
-    new Date(payload.sessionDate).getUTCDay()
-  );
-
+  // 1. Tutor must exist & be active
   const tutorUser = await Tutor.findById(payload.tutorId);
   if (!tutorUser || tutorUser.role !== UserRole.TUTOR) {
     throw new AppError(
@@ -51,6 +34,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
+  // Student must exist & be active
   const studentUser = await Student.findById(payload.studentId);
   if (!studentUser || studentUser.role !== UserRole.STUDENT) {
     throw new AppError(
@@ -59,11 +43,11 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // sessionStart/sessionEnd to Date objects (UTC)
-  const sessionStart = new Date(payload.sessionStart); // e.g. "2025-03-08T09:00:00.000Z"
-  const sessionEnd = new Date(payload.sessionEnd); // e.g. "2025-03-08T11:00:00.000Z"
+  // 2. Convert sessionStart/sessionEnd to Date objects (UTC)
+  const sessionStart = new Date(payload.sessionStart);
+  const sessionEnd = new Date(payload.sessionEnd);
 
-  // Check that the session is in the future
+  // Must be in the future
   const now = new Date();
   if (sessionStart <= now) {
     throw new AppError(
@@ -71,8 +55,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
       "Cannot request a lesson in the past or at the current time."
     );
   }
-
-  // Ensure sessionEnd is strictly after sessionStart
+  // Must be strictly after sessionStart
   if (sessionEnd <= sessionStart) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -80,49 +63,39 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // Tutor’s weekday availability (in UTC).  e.g. "Saturday"
+  // 3. Check tutor’s weekday availability
   const requestedDate = new Date(payload.sessionDate);
   const requestedWeekday = getUtcWeekdayName(requestedDate);
 
-  // Find an availability entry for that weekday
   const dayAvailability = tutorUser.availability?.find(
     (slot) => slot.day === requestedWeekday
   );
   if (!dayAvailability) {
-    console.log("DEBUG no availability =>", requestedWeekday);
     throw new AppError(
       StatusCodes.CONFLICT,
       `Tutor is not available on ${requestedWeekday}.`
     );
   }
 
-  // Convert the availability times (e.g. "09:00") to minutes from midnight (UTC)
-  const avStartMins = parseTimeToMinutes(dayAvailability.startTime); // "09:00" => 540
-  const avEndMins = parseTimeToMinutes(dayAvailability.endTime); // "11:00" => 660
+  // Convert availability to minutes from midnight (UTC)
+  const avStartMins = parseTimeToMinutes(dayAvailability.startTime); // e.g. "09:00" => 540
+  const avEndMins = parseTimeToMinutes(dayAvailability.endTime); // e.g. "11:00" => 660
 
-  // Convert the session times to total UTC minutes from midnight
-  const requestedStartMins = getUTCMinutes(sessionStart); // e.g., 09:00 UTC => 540
-  const requestedEndMins = getUTCMinutes(sessionEnd); // e.g., 11:00 UTC => 660
+  // Convert the session times to total UTC minutes
+  const requestedStartMins = getUTCMinutes(sessionStart); // e.g. 540
+  const requestedEndMins = getUTCMinutes(sessionEnd); // e.g. 660
 
-  console.log("DEBUG Time comparison =>", {
-    avStartMins,
-    avEndMins,
-    requestedStartMins,
-    requestedEndMins,
-  });
-
-  // If the requested time is outside [avStartMins, avEndMins], reject
+  // If the requested time is outside the tutor's availability
   if (requestedStartMins < avStartMins || requestedEndMins > avEndMins) {
     const sessionStartStr = format(sessionStart, "HH:mm");
     const sessionEndStr = format(sessionEnd, "HH:mm");
-
     throw new AppError(
       StatusCodes.CONFLICT,
       `Tutor not available for requested slot: ${sessionStartStr} - ${sessionEndStr} on ${requestedWeekday}.`
     );
   }
 
-  // Check if the tutor has the requested subject
+  // 4. Tutor must teach the requested subject
   if (!tutorUser.subjects?.includes(payload.subject)) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -130,8 +103,8 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // Check actual session length => must be exactly 60 or 120 minutes
-  const sessionDiffMins = requestedEndMins - requestedStartMins; // e.g. 540->600 => 60 mins
+  // 5. Session must be exactly 1 or 2 hours (60 or 120 min)
+  const sessionDiffMins = requestedEndMins - requestedStartMins;
   if (sessionDiffMins !== 60 && sessionDiffMins !== 120) {
     throw new AppError(
       StatusCodes.NOT_ACCEPTABLE,
@@ -139,32 +112,14 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // Prevent multiple requests from same student in the same timeslot
-  //    (unless prior was declined)
-  const existingStudentActiveRequest = await LessonRequest.findOne({
-    studentId: payload.studentId,
-    status: { $ne: "declined" },
-    sessionDate: payload.sessionDate,
-    $or: [
-      {
-        sessionStart: { $lt: payload.sessionEnd },
-        sessionEnd: { $gt: payload.sessionStart },
-      },
-    ],
-  });
-  if (existingStudentActiveRequest) {
-    throw new AppError(
-      StatusCodes.CONFLICT,
-      "You already have an active lesson request for this timeslot!"
-    );
-  }
-
-  // Check if there's already a request with the same tutor, subject, date, overlapping times
-  const existingTutorRequest = await LessonRequest.findOne({
+  // BLOCK if ANY existing request (pending, accepted, or declined)
+  //    overlaps the same timeslot for the same student & tutor
+  const overlappingRequest = await LessonRequest.findOne({
     tutorId: payload.tutorId,
     studentId: payload.studentId,
-    subject: payload.subject,
     sessionDate: payload.sessionDate,
+    isDeclined: false,
+
     $or: [
       {
         sessionStart: { $lt: payload.sessionEnd },
@@ -172,14 +127,14 @@ const createLessonRequest = async (payload: ILessonRequest) => {
       },
     ],
   });
-  if (existingTutorRequest) {
+  if (overlappingRequest) {
     throw new AppError(
       StatusCodes.CONFLICT,
-      "You already have a request for this subject and timeslot with this tutor!"
+      "A request or booking for this timeslot already exists "
     );
   }
 
-  // Timeslot availability for the tutor (Bookings) => partial booking logic
+  // Check timeslot availability for the tutor (Bookings) => partial booking logic
   const isTutorSlotAvailable = await checkTimeslotAvailability({
     userId: payload.tutorId,
     role: UserRole.TUTOR,
@@ -194,7 +149,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // Timeslot availability for the student (Bookings)
+  // Check timeslot availability for the student (Bookings)
   const isStudentSlotAvailable = await checkTimeslotAvailability({
     userId: payload.studentId,
     role: UserRole.STUDENT,
@@ -209,14 +164,17 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
+  // Finally, create the lesson request
   const result = await LessonRequest.create(payload);
   return result;
 };
 
+// Retrieve all lesson requests (admin/debugging)
 const getAllLessonRequests = async () => {
   return LessonRequest.find({});
 };
 
+// Retrieve a single lesson request by ID
 const getLessonRequestById = async (id: string) => {
   return LessonRequest.findById(id);
 };
