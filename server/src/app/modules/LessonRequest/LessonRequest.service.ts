@@ -21,7 +21,7 @@ import { format } from "date-fns";
  * 1. Ensures the tutor and student exist and are active.
  * 2. Validates the requested date/time is in the future and within the tutor’s availability.
  * 3. Checks for overlapping or duplicate requests.
- * 4. Allows partial booking within the availability (e.g., 10:00–11:00 inside 09:00–11:00).
+ * 4. Allows only 1-hour or 2-hour sessions (exactly 60 or 120 minutes).
  */
 const createLessonRequest = async (payload: ILessonRequest) => {
   // Debug prints for verifying date/time
@@ -43,7 +43,6 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     new Date(payload.sessionDate).getUTCDay()
   );
 
-  // 1. Ensure the tutor exists and is active
   const tutorUser = await Tutor.findById(payload.tutorId);
   if (!tutorUser || tutorUser.role !== UserRole.TUTOR) {
     throw new AppError(
@@ -52,9 +51,6 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  console.log("DEBUG Tutor Availability =>", tutorUser?.availability);
-
-  // 2. Ensure the student exists and is active
   const studentUser = await Student.findById(payload.studentId);
   if (!studentUser || studentUser.role !== UserRole.STUDENT) {
     throw new AppError(
@@ -63,11 +59,11 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 3. Convert sessionStart/sessionEnd to Date objects in UTC
+  // sessionStart/sessionEnd to Date objects (UTC)
   const sessionStart = new Date(payload.sessionStart); // e.g. "2025-03-08T09:00:00.000Z"
   const sessionEnd = new Date(payload.sessionEnd); // e.g. "2025-03-08T11:00:00.000Z"
 
-  // 4. Check that the session is in the future
+  // Check that the session is in the future
   const now = new Date();
   if (sessionStart <= now) {
     throw new AppError(
@@ -76,7 +72,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 5. Ensure sessionEnd is strictly after sessionStart
+  // Ensure sessionEnd is strictly after sessionStart
   if (sessionEnd <= sessionStart) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -84,9 +80,9 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 6. Validate the tutor’s weekday availability (in UTC)
+  // Tutor’s weekday availability (in UTC).  e.g. "Saturday"
   const requestedDate = new Date(payload.sessionDate);
-  const requestedWeekday = getUtcWeekdayName(requestedDate); // e.g., "Saturday"
+  const requestedWeekday = getUtcWeekdayName(requestedDate);
 
   // Find an availability entry for that weekday
   const dayAvailability = tutorUser.availability?.find(
@@ -117,7 +113,6 @@ const createLessonRequest = async (payload: ILessonRequest) => {
 
   // If the requested time is outside [avStartMins, avEndMins], reject
   if (requestedStartMins < avStartMins || requestedEndMins > avEndMins) {
-    // For better error clarity, show the requested times in HH:mm
     const sessionStartStr = format(sessionStart, "HH:mm");
     const sessionEndStr = format(sessionEnd, "HH:mm");
 
@@ -127,7 +122,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 7. Check if the tutor has the requested subject
+  // Check if the tutor has the requested subject
   if (!tutorUser.subjects?.includes(payload.subject)) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -135,7 +130,16 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 8. Prevent multiple requests from same student in the same timeslot
+  // Check actual session length => must be exactly 60 or 120 minutes
+  const sessionDiffMins = requestedEndMins - requestedStartMins; // e.g. 540->600 => 60 mins
+  if (sessionDiffMins !== 60 && sessionDiffMins !== 120) {
+    throw new AppError(
+      StatusCodes.NOT_ACCEPTABLE,
+      "Session must be exactly 1 hour or 2 hours!"
+    );
+  }
+
+  // Prevent multiple requests from same student in the same timeslot
   //    (unless prior was declined)
   const existingStudentActiveRequest = await LessonRequest.findOne({
     studentId: payload.studentId,
@@ -155,7 +159,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 9. Check if there's already a request with the same tutor, subject, date, overlapping times
+  // Check if there's already a request with the same tutor, subject, date, overlapping times
   const existingTutorRequest = await LessonRequest.findOne({
     tutorId: payload.tutorId,
     studentId: payload.studentId,
@@ -175,9 +179,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 10. Timeslot availability for the tutor (Bookings) => partial booking logic
-  //     If there's an existing confirmed booking from 09:00–10:00, but new request is 10:00–11:00,
-  //     that should be allowed. We check overlap in Bookings.
+  // Timeslot availability for the tutor (Bookings) => partial booking logic
   const isTutorSlotAvailable = await checkTimeslotAvailability({
     userId: payload.tutorId,
     role: UserRole.TUTOR,
@@ -192,7 +194,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 11. Timeslot availability for the student (Bookings)
+  // Timeslot availability for the student (Bookings)
   const isStudentSlotAvailable = await checkTimeslotAvailability({
     userId: payload.studentId,
     role: UserRole.STUDENT,
@@ -207,26 +209,14 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     );
   }
 
-  // 12. Validate duration (must be 1 or 2 hours)
-  const numericDuration = Number(payload.duration);
-  if (numericDuration < 1 || numericDuration > 2) {
-    throw new AppError(
-      StatusCodes.NOT_ACCEPTABLE,
-      "Duration must be between 1 and 2 hours."
-    );
-  }
-
-  // 13. Create the lesson request
   const result = await LessonRequest.create(payload);
   return result;
 };
 
-// Retrieve all lesson requests (e.g., admin or debugging)
 const getAllLessonRequests = async () => {
   return LessonRequest.find({});
 };
 
-// Retrieve a single lesson request by ID
 const getLessonRequestById = async (id: string) => {
   return LessonRequest.findById(id);
 };
