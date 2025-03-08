@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { bookingController } from './booking.controller';
+import { Router } from "express";
+import { bookingControllers } from "./booking.controller";
 
 const router = Router();
 
-// Define routes
-router.get('/', bookingController.getAll);
+router.get("/", bookingControllers.getAllBookings);
+router.get("/:userId", bookingControllers.getUserBookings);
 
-export default router;
+export const BookingRoutes = router;
