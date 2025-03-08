@@ -58,9 +58,28 @@ const declineLessonRequest = catchAsync(async (req: Request, res: Response) => {
     data: updatedRequest,
   });
 });
+
+export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const { request, booking } = await LessonRequestServices.acceptRequest(id);
+
+  // Return success
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Lesson request accepted successfully, booking created!",
+    data: {
+      request,
+      booking,
+    },
+  });
+});
+
 export const lessonRequestControllers = {
   createLessonRequest,
   getMyLessonRequest,
   getAllLessonRequests,
   declineLessonRequest,
+  acceptRequest,
 };

@@ -15,6 +15,9 @@ import {
 } from "./lessonRequest.utils";
 import User from "../User/User.model";
 import { format } from "date-fns";
+import { Booking } from "../booking/booking.model";
+import mongoose, { Types } from "mongoose";
+import { bookingServices } from "../booking/booking.service";
 
 /**
  * createLessonRequest:
@@ -227,10 +230,71 @@ const declineLessonRequest = async (requestId: string) => {
   return request;
 };
 
+/**
+ * Tutor accepts a lesson request:
+ * - Validate the request is not declined or accepted
+ * - Mark it isAccepted = true
+ * - Create a booking doc (via createBooking)
+ * - Use a transaction for atomicity
+ */
+export const acceptRequest = async (requestId: string) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const request = await LessonRequest.findById(requestId).session(session);
+    if (!request) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
+    }
+
+    if (request.isDeclined) {
+      throw new AppError(
+        StatusCodes.CONFLICT,
+        "Cannot accept a request that is already declined!"
+      );
+    }
+    if (request.isAccepted) {
+      throw new AppError(
+        StatusCodes.CONFLICT,
+        "This request is already accepted!"
+      );
+    }
+
+    request.isAccepted = true;
+    await request.save({ session });
+
+    // Create a booking using the createBooking function
+    const bookingPayload = {
+      tutorId: request.tutorId,
+      studentId: request.studentId,
+      lessonRequestId: request._id as Types.ObjectId,
+      subject: request.subject,
+      sessionDate: request.sessionDate,
+      sessionStart: request.sessionStart,
+      sessionEnd: request.sessionEnd,
+    };
+
+    const booking = await bookingServices.createBooking(
+      bookingPayload,
+      session
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return { request, booking };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
 export const LessonRequestServices = {
   createLessonRequest,
   getAllLessonRequests,
   getLessonRequestById,
   getMyLessonRequest,
   declineLessonRequest,
+  acceptRequest,
 };

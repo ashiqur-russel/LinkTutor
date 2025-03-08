@@ -1,4 +1,3 @@
-// booking.model.ts
 import mongoose, { Schema, Model } from "mongoose";
 import { IBooking } from "./booking.interface";
 import { BookingStatus, CanceledBy } from "./booking.constant";
@@ -38,7 +37,7 @@ const BookingSchema: Schema<IBooking> = new Schema({
   bookingStatus: {
     type: String,
     enum: Object.values(BookingStatus),
-    default: BookingStatus.PENDING,
+    default: BookingStatus.ACTIVE,
   },
   paymentId: {
     type: mongoose.Schema.Types.ObjectId,
