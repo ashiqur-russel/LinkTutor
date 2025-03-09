@@ -26,4 +26,25 @@ const getUserBookings = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const bookingControllers = { getAllBookings, getUserBookings };
+export const getUserUpcomingBookings = catchAsync(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    //const userId = req.user._id.toString();
+    const upcomingBookings = await bookingServices.getUserUpcomingBookings(
+      userId
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Upcoming bookings retrieved successfully",
+      data: upcomingBookings,
+    });
+  }
+);
+
+export const bookingControllers = {
+  getAllBookings,
+  getUserBookings,
+  getUserUpcomingBookings,
+};

@@ -28,7 +28,16 @@ export const getUserBookings = async (userId: string) => {
     return await Booking.find({ tutorId: userId });
   }
 };
-export const getUserUpcomingBookings = async (userId: string) => {};
+export const getUserUpcomingBookings = async (userId: string) => {
+  const now = new Date();
+
+  const upcomingBookings = await Booking.find({
+    studentId: userId,
+    sessionStart: { $gte: now },
+  }).sort({ sessionStart: 1 });
+
+  return upcomingBookings;
+};
 
 export const bookingServices = {
   createBooking,
