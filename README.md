@@ -49,34 +49,35 @@ Below a diagram that provides an overview of the platform's architecture:
 
 ## API Documentation
 
-# 1. Auth
+# Auth
 
 POST /auth/register
 Content-Type: application/json
 
 Request Body (example):
+
 ```json
 {
-"name": "John Doe",
-"email": "john@example.com",
-"password": "secret123",
-"role": "student"
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secret123",
+  "role": "student"
 }
 ```
----
 
 POST /auth/login
 Content-Type: application/json
 
 Request Body (example):
+
 ```json
 {
-"email": "john@example.com",
-"password": "secret123"
+  "email": "john@example.com",
+  "password": "secret123"
 }
 ```
 
-# 2. User Management
+# User Management
 
 POST /users/tutor
 Content-Type: application/json
@@ -103,33 +104,35 @@ POST /users/student
 Content-Type: application/json
 
 Request Body (example):
+
 ```json
 {
-"name": "John Student",
-"email": "john.student@example.com",
-"password": "somepass"
+  "name": "John Student",
+  "email": "john.student@example.com",
+  "password": "somepass"
 }
 ```
 
-# 3. Lesson Requests
+# Lesson Requests
 
 POST /lesson-requests
 Content-Type: application/json
 
 Request Body (example):
+
 ```json
 {
-"tutorId": "67cb2e558307779921dea362",
-"studentId": "67cb2e5e8307779921dea369",
-"subject": "Mathematics",
-"duration": 2,
-"sessionDate": "2025-03-08T00:00:00.000Z",
-"sessionStart": "2025-03-08T09:00:00.000Z",
-"sessionEnd": "2025-03-08T11:00:00.000Z"
+  "tutorId": "67cb2e558307779921dea362",
+  "studentId": "67cb2e5e8307779921dea369",
+  "subject": "Mathematics",
+  "duration": 2,
+  "sessionDate": "2025-03-08T00:00:00.000Z",
+  "sessionStart": "2025-03-08T09:00:00.000Z",
+  "sessionEnd": "2025-03-08T11:00:00.000Z"
 }
 ```
 
-# 4. Accept a Lesson Request & Create Booking
+# Accept a Lesson Request & Create Booking
 
 POST /lesson-requests/:id/accept-request
 
@@ -139,34 +142,34 @@ Description:
 - Creates a corresponding Booking in the Booking collection
 
 Example Response: (will be changed)
+
 ```json
 {
-"success": true,
-"message": "Lesson request accepted successfully, booking created!",
-"data": {
-"request": {
-"\_id": "67cc4244152f8601b3cf1d60",
-"tutorId": "67cb2e558307779921dea362",
-"studentId": "67cb2e5e8307779921dea369",
-"isAccepted": true,
-"isDeclined": false,
-"subject": "Mathematics"
-...
-},
-"booking": {
-"\_id": "someBookingId",
-"tutorId": "67cb2e558307779921dea362",
-"studentId": "67cb2e5e8307779921dea369",
-"subject": "Mathematics",
-"sessionDate": "2025-03-08T00:00:00.000Z",
-"sessionStart": "2025-03-08T09:00:00.000Z",
-"sessionEnd": "2025-03-08T11:00:00.000Z",
-}
-}
+  "success": true,
+  "message": "Lesson request accepted successfully, booking created!",
+  "data": {
+    "request": {
+      "_id": "67cc4244152f8601b3cf1d60",
+      "tutorId": "67cb2e558307779921dea362",
+      "studentId": "67cb2e5e8307779921dea369",
+      "isAccepted": true,
+      "isDeclined": false,
+      "subject": "Mathematics"
+    },
+    "booking": {
+      "_id": "someBookingId",
+      "tutorId": "67cb2e558307779921dea362",
+      "studentId": "67cb2e5e8307779921dea369",
+      "subject": "Mathematics",
+      "sessionDate": "2025-03-08T00:00:00.000Z",
+      "sessionStart": "2025-03-08T09:00:00.000Z",
+      "sessionEnd": "2025-03-08T11:00:00.000Z"
+    }
+  }
 }
 ```
 
-# 5. Bookings
+# Bookings
 
 POST /bookings
 Content-Type: application/json
@@ -175,16 +178,16 @@ Request Body (example):
 
 ```json
 {
-"tutorId": "67cb2e558307779921dea362",
-"studentId": "67cb2e5e8307779921dea369",
-"subject": "Math",
-"sessionDate": "2025-03-08T00:00:00.000Z",
-"sessionStart": "2025-03-08T09:00:00.000Z",
-"sessionEnd": "2025-03-08T11:00:00.000Z"
+  "tutorId": "67cb2e558307779921dea362",
+  "studentId": "67cb2e5e8307779921dea369",
+  "subject": "Math",
+  "sessionDate": "2025-03-08T00:00:00.000Z",
+  "sessionStart": "2025-03-08T09:00:00.000Z",
+  "sessionEnd": "2025-03-08T11:00:00.000Z"
 }
-````
+```
 
-# 6. Get My Bookings (TBC)
+# Get My Bookings (TBC)
 
 GET /bookings/my
 
@@ -192,7 +195,7 @@ Description:
 
 - Returns all bookings for the current user (student or tutor).
 
-# 7. Get My Upcoming Bookings (TBC)
+# Get My Upcoming Bookings (TBC)
 
 GET /bookings/my-upcoming
 
@@ -218,14 +221,30 @@ Description:
 
 2. **Install dependencies:**
 
+   Frontend (client)
+
    ```bash
+   cd client
+   npm install
+   ```
+
+   API (server)
+
+   ```bash
+   cd server
    npm install
    ```
 
 3. **Run the application:**
 
+   Frontend (client)
+
    ```bash
-   npm start
+   npm run dev
    ```
 
----
+   API (server)
+
+   ```bash
+   npm run dev
+   ```

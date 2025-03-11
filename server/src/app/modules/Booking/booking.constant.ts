@@ -12,5 +12,5 @@ export enum CanceledBy {
 export enum PaymentStatus {
   PENDING = "pending",
   PAID = "paid",
-  REFUNDED = "refnded",
+  REFUNDED = "refunded",
 }

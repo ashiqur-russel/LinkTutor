@@ -10,6 +10,7 @@ import User from "../modules/User/User.model";
 const auth = (...requiredRoles: UserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
+    console.log(token);
 
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized!");
@@ -23,7 +24,7 @@ const auth = (...requiredRoles: UserRole[]) => {
 
       const { role, email } = decoded;
 
-      const user = await User.findOne({ email, role, isActive: true });
+      const user = await User.findOne({ email, role });
 
       if (!user) {
         throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");

@@ -34,6 +34,7 @@ const BookingSchema: Schema<IBooking> = new Schema({
     default: null,
   },
   cancelReason: { type: String, default: null },
+  cancellationTime: { type: Date, required: false },
   bookingStatus: {
     type: String,
     enum: Object.values(BookingStatus),
@@ -44,6 +45,7 @@ const BookingSchema: Schema<IBooking> = new Schema({
     ref: "Payment",
     default: null,
   },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
