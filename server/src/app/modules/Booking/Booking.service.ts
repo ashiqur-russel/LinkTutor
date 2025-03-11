@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import { BookingStatus, CanceledBy } from "./booking.constant";
+import { LessonRequest } from "../lessonRequest/lessonRequest.model";
 
 const createBooking = async (
   payload: Partial<IBooking>,
@@ -49,42 +50,63 @@ export const cancelBooking = async (
   userInfo: JwtPayload,
   reason?: string
 ) => {
-  const booking = await Booking.findById({ _id: bookingId });
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  if (!booking) {
-    throw new Error("Booking not found");
+  try {
+    const booking = await Booking.findById(bookingId).session(session);
+    if (!booking) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Booking not found");
+    }
+
+    if (booking.isCancelled) {
+      throw new AppError(
+        StatusCodes.CONFLICT,
+        "This booking is already canceled!"
+      );
+    }
+
+    if (userInfo.role === UserRole.STUDENT) {
+      booking.isCancelled = true;
+      booking.canceledBy = CanceledBy.STUDENT;
+      booking.cancelReason = reason || null;
+      booking.bookingStatus = BookingStatus.CANCELLED;
+      booking.cancellationTime = new Date();
+    } else if (userInfo.role === UserRole.TUTOR) {
+      booking.isCancelled = true;
+      booking.canceledBy = CanceledBy.TUTOR;
+      booking.cancelReason = reason || null;
+      booking.bookingStatus = BookingStatus.CANCELLED;
+      booking.cancellationTime = new Date();
+    } else {
+      throw new AppError(
+        StatusCodes.FORBIDDEN,
+        "You are not authorized to cancel this booking!"
+      );
+    }
+
+    await booking.save({ session });
+
+    if (booking.lessonRequestId) {
+      const lessonRequest = await LessonRequest.findById(
+        booking.lessonRequestId
+      ).session(session);
+
+      if (lessonRequest) {
+        lessonRequest.status = "cancelled";
+        await lessonRequest.save({ session });
+      }
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return booking;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  console.log(booking);
-  console.log(userInfo.role);
-
-  if (!booking) {
-    throw new AppError(StatusCodes.NOT_FOUND, "Booking not found");
-  }
-
-  if (userInfo.role === UserRole.STUDENT) {
-    console.log("canceeled by student");
-
-    booking.isCancelled = true;
-    booking.canceledBy = CanceledBy.STUDENT;
-    booking.cancelReason = reason || null;
-    booking.bookingStatus = BookingStatus.CANCELLED;
-  } else if (userInfo.role === UserRole.TUTOR) {
-    console.log("canceeled by TUTOR");
-    booking.isCancelled = true;
-    booking.canceledBy = CanceledBy.TUTOR;
-    booking.cancelReason = reason || null;
-    booking.bookingStatus = BookingStatus.CANCELLED;
-  } else {
-    throw new AppError(
-      StatusCodes.FORBIDDEN,
-      "You are not authorized to cancel this booking!"
-    );
-  }
-
-  await booking.save();
-
-  return booking;
 };
 
 export const bookingServices = {
