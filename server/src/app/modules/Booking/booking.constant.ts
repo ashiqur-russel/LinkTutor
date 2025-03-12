@@ -2,6 +2,7 @@ export enum BookingStatus {
   ACTIVE = "active",
   COMPLETED = "completed",
   CANCELLED = "cancelled",
+  HELD = "held",
 }
 
 export enum CanceledBy {
