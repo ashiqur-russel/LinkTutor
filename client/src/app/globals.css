@@ -1,26 +1,135 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
-:root {
-  --background: #ffffff;
-  --foreground: #000000;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+
+  /* Button Colors */
+  --color-button-primary: var(--button-primary);
+  --color-button-primary-foreground: var(--button-primary-foreground);
+  --color-button-secondary: var(--button-secondary);
+  --color-button-secondary-foreground: var(--button-secondary-foreground);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 6px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #000000;
+:root {
+  --radius: 0.625rem;
+
+  /* Background and Foreground */
+  --background: #ffffff;
+  --foreground: #1e425c;
+
+  /* Primary Colors */
+  --primary: #133954;
+  --primary-foreground: #ffffff;
+
+  /* Secondary Colors */
+  --secondary: #80c3bc;
+  --secondary-foreground: #133954;
+
+  /* Accent Colors */
+  --accent: #9faeb8;
+  --accent-foreground: #133954;
+
+  /* Muted Colors */
+  --muted: #f2f2f6;
+  --muted-foreground: #133954;
+
+  /* Borders & Inputs */
+  --border: #efefef;
+  --input: #f1f1f5;
+  --ring: #143953;
+
+  /* Button Colors */
+  --button-primary: #9f8634; /* Gold */
+  --button-primary-foreground: #ffffff; /* White text */
+  --button-secondary: #ded5b9; /* Light Beige */
+  --button-secondary-foreground: #9a7f29; /* Muted Gold */
+
+  /* Sidebar */
+  --sidebar: #1e425c;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #133954;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #80c3bc;
+  --sidebar-accent-foreground: #133954;
+  --sidebar-border: #efefef;
+  --sidebar-ring: #143953;
+
+  /* Shadows */
+  --shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --background: #1e425c;
+  --foreground: #ffffff;
+
+  --primary: #9faeb8;
+  --primary-foreground: #133954;
+
+  --secondary: #133954;
+  --secondary-foreground: #ffffff;
+
+  --accent: #80c3bc;
+  --accent-foreground: #133954;
+
+  --muted: #143953;
+  --muted-foreground: #ffffff;
+
+  --border: #9faeb8;
+  --input: #9faeb8;
+  --ring: #80c3bc;
+
+  /* Buttons Dark Mode */
+  --button-primary: #9a7f29; /* Muted Gold */
+  --button-primary-foreground: #ffffff;
+  --button-secondary: #133954; /* Dark Blue */
+  --button-secondary-foreground: #ded5b9; /* Beige */
+
+  --sidebar: #133954;
+  --sidebar-foreground: #ffffff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-[var(--button-primary)] text-[var(--button-primary-foreground)] px-4 py-2 rounded-md font-medium shadow-md hover:brightness-110;
+  }
+
+  .btn-secondary {
+    @apply border-[2px] border-[var(--button-secondary-foreground)] text-[var(--button-secondary-foreground)] px-4 py-2 rounded-md font-medium shadow-md hover:brightness-110;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
