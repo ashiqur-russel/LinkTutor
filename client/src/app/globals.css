@@ -62,6 +62,7 @@
 
   /* Borders & Inputs */
   --border: #efefef;
+  --boder-outline: #9a7f29;
   --input: #f1f1f5;
   --ring: #143953;
 
@@ -131,5 +132,19 @@
   .btn-secondary {
     @apply border-[2px] border-[var(--button-secondary-foreground)] text-[var(--button-secondary-foreground)] px-4 py-2 rounded-md font-medium shadow-md hover:brightness-110;
   }
+
+  .btn-gold-outline {
+    @apply border-[2px] border-[#9f8634] text-[#9f8634] px-4 py-2 rounded-md font-medium shadow-md 
+           hover:bg-[#9f8634] hover:text-white transition duration-200;
+  }
+  
 }
+
+@layer components {
+  .btn-gold-outline {
+    @apply border-[2px] border-[#9f8634] text-[#9f8634] px-4 py-2 rounded-md font-medium shadow-md 
+           hover:bg-[#9f8634] hover:text-white transition duration-200;
+  }
+}
+
 

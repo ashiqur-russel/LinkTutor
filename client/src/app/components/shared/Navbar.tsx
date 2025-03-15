@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
-import { FiMenu, FiX, FiSearch, FiPhone, FiLogIn } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +10,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between md:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/">
-          <span className="text-teal-700 text-2xl font-bold cursor-pointer">
+          <span className="text-primary text-2xl font-bold cursor-pointer">
             LinkTutor
           </span>
         </Link>
@@ -29,11 +29,7 @@ const Navbar = () => {
 
         {/* Mobile & Tablet Menu Button */}
         <div className="md:flex md:items-center md:ml-auto hidden">
-          <FiSearch className="text-gray-600 cursor-pointer text-lg md:mr-4" />
-          <FiPhone className="text-gray-600 cursor-pointer text-lg md:mr-4" />
-          <button className="border border-gold text-gold px-4 py-1 rounded-md hidden md:block">
-            Login
-          </button>
+          <button className="btn-gold-outline">Login</button>
         </div>
         <button
           className="md:hidden text-gray-800 text-2xl ml-auto"
@@ -56,11 +52,8 @@ const Navbar = () => {
             For Schools
           </Link>
 
-          <div className="flex items-center space-x-4 mt-3">
-            <FiSearch className="text-gray-600 cursor-pointer text-lg" />
-            <FiPhone className="text-gray-600 cursor-pointer text-lg" />
-          </div>
-          <button className="border border-gold text-gold px-4 py-1 rounded-md w-full mt-3">
+          <div className="flex items-center space-x-4 mt-3"></div>
+          <button className="border border-gold-200 text-gold px-4 py-1 rounded-md w-full mt-3">
             Login
           </button>
         </div>
