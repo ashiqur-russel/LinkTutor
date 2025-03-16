@@ -2,7 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/app/context/UserContext";
+import { toast } from "sonner";
+import { registerStudent } from "@/app/services/AuthService";
 
 // Define the shape of our form data
 type FormValues = {
@@ -28,18 +32,20 @@ export default function RegisterStudent() {
     },
   });
 
+  const router = useRouter();
+  const { setIsLoading } = useUser();
+
   // Handle form submit
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      console.log("Student data submitted:", data);
-      // Example fetch:
-      // const res = await fetch("/api/register/student", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(data),
-      // });
-      // if (!res.ok) throw new Error("Failed to register student");
-      // ...
+      const res = await registerStudent(data);
+      setIsLoading(true);
+      if (res?.success) {
+        toast.success(res?.message);
+        router.push("/");
+      } else {
+        toast.error(res?.message);
+      }
     } catch (err) {
       console.error("Registration error:", err);
       // Show an error message
@@ -49,7 +55,7 @@ export default function RegisterStudent() {
   return (
     <div className="bg-[var(--background)] text-[var(--foreground)] w-full max-w-lg p-8 mt-5 rounded shadow-sm">
       <h2 className="text-3xl font-bold text-center mb-6">
-        Register with LinkTutor
+        Register as Student
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

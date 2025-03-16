@@ -24,7 +24,7 @@ interface LoginFormFields {
 }
 
 const Login = () => {
-  const { setUser } = useUser();
+  const { setUser, setIsLoading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -45,6 +45,7 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
     try {
       const res = await loginUser(data);
+      setIsLoading(true);
       if (res?.success) {
         toast.success(res?.message);
         setUser(res.user);
