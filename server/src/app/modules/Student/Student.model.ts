@@ -11,7 +11,7 @@ const guardianSchema: Schema = new Schema({
 });
 
 const StudentSchema: Schema<IStudent> = new Schema({
-  classLevel: { type: String, required: false, default: null },
+  classLevel: { type: String, required: true },
   guardian: {
     type: guardianSchema,
     required: false,
