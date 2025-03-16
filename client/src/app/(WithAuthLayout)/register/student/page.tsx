@@ -1,7 +1,12 @@
+import RegisterStudent from "@/app/components/modules/Auth/Register/RegisterStudent";
 import React from "react";
 
-const StudentLoginPage = () => {
-  return <div>StudentLoginPage</div>;
+const StudentRegisterPage = () => {
+  return (
+    <div className="flex justify-center items-center min-h-screen ">
+      <RegisterStudent />
+    </div>
+  );
 };
 
-export default StudentLoginPage;
+export default StudentRegisterPage;

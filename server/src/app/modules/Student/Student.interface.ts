@@ -1,7 +1,7 @@
 import { IUser } from "../User/User.interface";
 
 export interface IStudent extends IUser {
-  classLevel: string;
+  classLevel?: string;
   guardian?: {
     name?: string;
     phone?: string;

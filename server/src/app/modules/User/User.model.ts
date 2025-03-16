@@ -24,7 +24,7 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(UserRole), required: true },
-    address: { type: AddressSchema, required: true },
+    address: { type: AddressSchema, required: false },
     phone: { type: String },
     isActive: { type: Boolean, default: true },
   },

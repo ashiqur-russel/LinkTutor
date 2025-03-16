@@ -26,11 +26,13 @@ const Navbar = () => {
             For Tutors
           </Link>
         </nav>
-
         {/* Mobile & Tablet Menu Button */}
         <div className="md:flex md:items-center md:ml-auto hidden">
-          <button className="btn-gold-outline">Login</button>
-        </div>
+          <button className="btn-gold-outline">
+            {" "}
+            <Link href={"/login"}>Login</Link>
+          </button>
+        </div>{" "}
         <button
           className="md:hidden text-gray-800 text-2xl ml-auto"
           onClick={() => setIsOpen(!isOpen)}
@@ -53,8 +55,8 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-4 mt-3"></div>
-          <button className="border border-gold-200 text-gold px-4 py-1 rounded-md w-full mt-3">
-            Login
+          <button className="border border-gold-200 text-gold px-4 py-1 cursor-pointer rounded-md w-full mt-3">
+            <Link href={"/login"}> Login</Link>
           </button>
         </div>
       )}

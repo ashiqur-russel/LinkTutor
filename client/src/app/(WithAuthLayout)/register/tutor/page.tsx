@@ -1,7 +1,12 @@
+import RegisterTutor from "@/app/components/modules/Auth/Register/RegisterTutor";
 import React from "react";
 
-const TutorLoginPage = () => {
-  return <div>TutorLoginPage</div>;
+const TutorRegisterPage = () => {
+  return (
+    <div className="flex justify-center items-center min-h-screen ">
+      <RegisterTutor />
+    </div>
+  );
 };
 
-export default TutorLoginPage;
+export default TutorRegisterPage;

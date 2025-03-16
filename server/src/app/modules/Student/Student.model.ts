@@ -3,13 +3,19 @@ import { IStudent } from "./Student.interface";
 import { UserRole } from "../User/User.interface";
 import User from "../User/User.model";
 
+const guardianSchema: Schema = new Schema({
+  name: { type: String, required: false },
+  phone: { type: String, required: false },
+  email: { type: String, required: false },
+  relationship: { type: String, required: false },
+});
+
 const StudentSchema: Schema<IStudent> = new Schema({
-  classLevel: { type: String, required: true },
+  classLevel: { type: String, required: false, default: null },
   guardian: {
-    name: { type: String },
-    phone: { type: String },
-    email: { type: String },
-    relationship: { type: String },
+    type: guardianSchema,
+    required: false,
+    default: null,
   },
 });
 
