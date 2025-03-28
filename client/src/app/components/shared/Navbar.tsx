@@ -48,14 +48,27 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex md:space-x-6 md:justify-center md:w-full lg:ml-10">
           <Link href="#" className="text-gray-800 hover:text-teal-600">
-            For Students
+            ABOUT US
           </Link>
           <Link href="#" className="text-gray-800 hover:text-teal-600">
-            For Schools
+            CONTACT
           </Link>
           <Link href="#" className="text-gray-800 hover:text-teal-600">
-            For Tutors
+            FAQ
           </Link>
+          <Link href="#" className="text-gray-800 hover:text-teal-600">
+            NEWS
+          </Link>
+          {user?.role === "student" && (
+            <Link href="#" className="text-gray-800 hover:text-teal-600">
+              MY REQUEST
+            </Link>
+          )}
+          {user?.role === "tutor" && (
+            <Link href="#" className="text-gray-800 hover:text-teal-600">
+              MY OFFER
+            </Link>
+          )}
         </nav>
 
         {/* Desktop: Right side (avatar or login) */}
@@ -144,14 +157,29 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white shadow-md p-4 space-y-3">
           <Link href="#" className="block text-gray-800 hover:text-teal-600">
-            For Students
+            About Us
           </Link>
           <Link href="#" className="block text-gray-800 hover:text-teal-600">
-            For Tutors
+            FAQ
           </Link>
           <Link href="#" className="block text-gray-800 hover:text-teal-600">
-            For Schools
+            Contact
           </Link>
+          <Link href="#" className="block text-gray-800 hover:text-teal-600">
+            NEWS
+          </Link>
+
+          {user?.role === "student" && (
+            <Link href="#" className="text-gray-800 hover:text-teal-600">
+              MY REQUEST
+            </Link>
+          )}
+
+          {user?.role === "tutor" && (
+            <Link href="#" className="text-gray-800 hover:text-teal-600">
+              MY OFFER
+            </Link>
+          )}
 
           {user && (
             <div className="mt-3 space-y-2">
