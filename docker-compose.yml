@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mongodb:
     image: mongo:6.0.6
@@ -9,21 +7,21 @@ services:
     volumes:
       - mongodb_data:/data/db
 
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    container_name: linktutor-server
-    ports:
-      - "5001:5001"
-    depends_on:
-      - mongodb
-    env_file:
-      - ./server/.env
-    restart: unless-stopped
-    volumes:
-      - ./server:/app
-      - /app/node_modules
+  # server:
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile
+  #   container_name: linktutor-server
+  #   ports:
+  #     - "5001:5001"
+  #   depends_on:
+  #     - mongodb
+  #   env_file:
+  #     - ./server/.env
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./server:/app
+  #     - /app/node_modules
 
 volumes:
   mongodb_data:

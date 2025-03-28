@@ -1,8 +1,8 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /application
 
-COPY package.json package-lock.json ./
+COPY package*.json package-lock.json ./
 
 RUN npm install --frozen-lockfile --ignore-scripts
 
