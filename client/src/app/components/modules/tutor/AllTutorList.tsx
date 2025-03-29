@@ -6,6 +6,7 @@ import React from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PhotoTutor from "../../../../../public/assets/tutor/tutor.avif";
+import FilterSidebar from "./FilterSidebar";
 
 type AllTutorListProps = {
   tutor: ITutor[];
@@ -15,12 +16,14 @@ const AllTutorList: React.FC<AllTutorListProps> = ({ tutor }) => {
   return (
     // <div className="container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div className="flex">
-      <div className="basis-64 px-6 py-8 bg-amber-100"> sidebar search</div>
-      <div className="container flex-1 mx-auto px-6 py-8 grid grid-cols-1 gap-6 basis-128 bg-red-200">
+      <div className=" ">
+        <FilterSidebar />
+      </div>
+      <div className="container flex-1 mx-auto px-6 py-8 grid grid-cols-1 gap-6 basis-128">
         {tutor?.map((tutor) => (
           <div
             key={tutor.email}
-            className="flex border rounded-lg p-4 shadow-md bg-white flex-col md:flex-row"
+            className="flex border rounded-lg p-4 shadow-md bg-white flex-col md:flex-row md:w-[91%]"
           >
             <div className="flex justify-center mb-4">
               <Image
@@ -32,7 +35,7 @@ const AllTutorList: React.FC<AllTutorListProps> = ({ tutor }) => {
               />
             </div>
 
-            <div className="text-center flex-1/2">
+            <div className="text-center flex-1/2 md:mx-2">
               <h3 className="text-lg font-bold">{tutor.name}</h3>
               <p className="text-sm text-gray-600">
                 Subjects: {tutor?.subjects?.join(", ")}
