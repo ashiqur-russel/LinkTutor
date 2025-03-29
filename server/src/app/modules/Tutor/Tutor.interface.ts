@@ -9,6 +9,7 @@ export interface ITutor extends IUser {
     endTime: string;
   }[];
   subjects: string[];
+  rating?: string;
 
   hourRate: number;
 }

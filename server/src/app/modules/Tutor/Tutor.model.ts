@@ -14,6 +14,7 @@ const TutorSchema: Schema<ITutor> = new Schema({
   ],
   subjects: [{ type: String, required: true }],
   hourRate: { type: Number, required: true },
+  rating: { type: Number },
 });
 
 const Tutor = User.discriminator<ITutor>(UserRole.TUTOR, TutorSchema);

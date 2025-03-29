@@ -1,72 +1,72 @@
 "use client";
 
 import { ITutor } from "@/app/types";
-import Image from "next/image";
-import React from "react";
-import { Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PhotoTutor from "../../../../../public/assets/tutor/tutor.avif";
+
+import React, { useState, useEffect } from "react";
+
 import FilterSidebar from "./FilterSidebar";
+import { getAllTutors } from "@/app/services/TutorService";
+import Spinner from "@/components/ui/spinner";
+import TutorInfoCard from "./TutorInfoCard";
 
-type AllTutorListProps = {
-  tutor: ITutor[];
-};
+const AllTutorList: React.FC = () => {
+  const [tutors, setTutors] = useState<ITutor[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    availability: [] as string[],
+    subjects: [] as string[],
+    Ratings: [] as number[],
+    HourRate: { min: "", max: "" },
+  });
 
-const AllTutorList: React.FC<AllTutorListProps> = ({ tutor }) => {
+  const handleFilterChange = (updatedFilters: any) => {
+    setFilters(updatedFilters);
+  };
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      setLoading(true);
+
+      const queryFilters = {
+        ...filters,
+        HourRate:
+          filters.HourRate.min && filters.HourRate.max
+            ? [filters.HourRate.min, filters.HourRate.max]
+            : undefined,
+      };
+
+      try {
+        const response = await getAllTutors(queryFilters, "1", "10");
+        setTutors(response.data || []);
+      } catch (error) {
+        console.error("Error fetching tutors", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTutors();
+  }, [filters]);
+
   return (
-    // <div className="container mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div className="flex">
       <div className=" ">
-        <FilterSidebar />
+        <FilterSidebar onFilterChange={handleFilterChange} />
       </div>
       <div className="container flex-1 mx-auto px-6 py-8 grid grid-cols-1 gap-6 basis-128">
-        {tutor?.map((tutor) => (
-          <div
-            key={tutor.email}
-            className="flex border rounded-lg p-4 shadow-md bg-white flex-col md:flex-row md:w-[91%]"
-          >
-            <div className="flex justify-center mb-4">
-              <Image
-                src={PhotoTutor}
-                alt={tutor.name}
-                width={200}
-                height={100}
-                className="rounded-md object-cover"
-              />
-            </div>
-
-            <div className="text-center flex-1/2 md:mx-2">
-              <h3 className="text-lg font-bold">{tutor.name}</h3>
-              <p className="text-sm text-gray-600">
-                Subjects: {tutor?.subjects?.join(", ")}
-              </p>
-              <p className="text-sm text-gray-500">Availability:</p>
-              <p className="text-xs text-gray-500">
-                {tutor?.availability?.map((slot, index) => (
-                  <span
-                    key={index}
-                  >{`${slot.day}:${slot.startTime} -${slot.endTime}   `}</span>
-                ))}
-              </p>
-            </div>
-
-            <div className="text-center mt-4  flex-1/5">
-              <div className="flex items-center justify-center mb-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="ml-1 text-sm font-medium">5</span>
-              </div>
-              <p className="text-lg font-bold">{tutor.hourRate}€</p>
-              <div className="mt-4 flex flex-col gap-2">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white">
-                  Book a session
-                </Button>
-                <Button variant="outline" className="border-gray-300">
-                  Send Message
-                </Button>
-              </div>
-            </div>
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <Spinner />
           </div>
-        ))}
+        ) : tutors.length === 0 ? (
+          <div className="text-center">
+            <p>No tutor available with the search filters.</p>
+          </div>
+        ) : (
+          tutors.map((tutor) => (
+            <TutorInfoCard key={tutor.email} tutor={tutor} />
+          ))
+        )}
       </div>
     </div>
   );
