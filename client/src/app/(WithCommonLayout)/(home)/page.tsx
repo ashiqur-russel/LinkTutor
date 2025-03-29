@@ -7,13 +7,13 @@ import React from "react";
 
 const Home = () => {
   return (
-    <div>
+    <>
       <HeroSection />
       <HowItWorks />
       <TutorsLists />
       <LessonsPage />
       <TutorCTA />
-    </div>
+    </>
   );
 };
 

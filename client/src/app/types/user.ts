@@ -8,6 +8,7 @@ export interface IUser {
   address?: IAddress;
   phone?: string;
   createdAt?: string;
+  photoUrl?: string;
   updatedAt?: string;
   iat?: number;
   exp?: number;
@@ -42,9 +43,19 @@ export interface IAvailability {
   endTime: string;
 }
 
+export interface IReview {
+  _id?: string;
+  userId: string;
+  bookingId: string;
+  comment: string;
+  rating: string;
+}
+
 export interface ITutor extends IUser {
   role: "tutor";
+  rating?: "string";
   availability?: IAvailability[];
   subjects?: string[];
   hourRate?: number;
+  review?: IReview[];
 }
