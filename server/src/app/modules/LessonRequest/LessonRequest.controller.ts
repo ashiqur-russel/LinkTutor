@@ -22,26 +22,33 @@ export const getMyLessonRequest = catchAsync(
   async (req: Request, res: Response) => {
     const { userId } = req.params;
 
-    const result = await LessonRequestServices.getMyLessonRequest(userId);
+    const { result, meta } = await LessonRequestServices.getMyLessonRequest(
+      userId,
+      req.query
+    );
 
     sendResponse(res, {
       statusCode: 201,
       success: true,
       message: "Lesson request fetched successfully",
       data: result,
+      meta: meta,
     });
   }
 );
 
 export const getAllLessonRequests = catchAsync(
   async (req: Request, res: Response) => {
-    const data = await LessonRequestServices.getAllLessonRequests();
+    const { result, meta } = await LessonRequestServices.getAllLessonRequests(
+      req.query
+    );
 
     sendResponse(res, {
       statusCode: 201,
       success: true,
       message: "Lesson request fetched successfully",
-      data: {},
+      data: result,
+      meta: meta,
     });
   }
 );

@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { Booking } from "../booking/booking.model";
 import mongoose, { Types } from "mongoose";
 import { bookingServices } from "../booking/booking.service";
+import QueryBuilder from "../../builder/QueryBilder";
 
 /**
  * createLessonRequest:
@@ -212,7 +213,8 @@ const createLessonRequest = async (payload: ILessonRequest) => {
   }
 
   // Calculate session duration in minutes
-  const sessionDiffMins = (sessionEnd.getTime() - sessionStart.getTime()) / (1000 * 60);
+  const sessionDiffMins =
+    (sessionEnd.getTime() - sessionStart.getTime()) / (1000 * 60);
   if (sessionDiffMins !== 60 && sessionDiffMins !== 120) {
     throw new AppError(
       StatusCodes.NOT_ACCEPTABLE,
@@ -321,8 +323,17 @@ const createLessonRequest = async (payload: ILessonRequest) => {
 };
 
 // Retrieve all lesson requests (admin/debugging)
-const getAllLessonRequests = async () => {
-  return LessonRequest.find({});
+const getAllLessonRequests = async (query: Record<string, unknown>) => {
+  const lessonQuery = new QueryBuilder(LessonRequest.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await lessonQuery.modelQuery;
+  const meta = await lessonQuery.countTotal();
+
+  return { result, meta };
 };
 
 // Retrieve a single lesson request by ID
@@ -331,20 +342,33 @@ const getLessonRequestById = async (id: string) => {
 };
 
 // Retrieve all lesson requests for the current user (student or tutor)
-const getMyLessonRequest = async (userId: string) => {
+const getMyLessonRequest = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
   const user = await (User as any).checkUserExist(userId);
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, "User does not exist!");
   }
 
+  let filter = {};
   if (user.role === UserRole.STUDENT) {
-    console.log("find lesson request");
-    return await LessonRequest.find({ studentId: userId });
+    filter = { studentId: userId };
   } else if (user.role === UserRole.TUTOR) {
-    return await LessonRequest.find({ tutorId: userId });
+    filter = { tutorId: userId };
   }
-};
 
+  const lessonQuery = new QueryBuilder(LessonRequest.find(filter), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await lessonQuery.modelQuery;
+  const meta = await lessonQuery.countTotal();
+
+  return { result, meta };
+};
 /**
  * Tutor declines a lesson request by ID.
  * @param requestId The _id of the lesson request document
