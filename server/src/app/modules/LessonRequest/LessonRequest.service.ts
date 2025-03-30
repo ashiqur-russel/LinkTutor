@@ -429,6 +429,34 @@ const declineLessonRequest = async (requestId: string) => {
   }
 
   request.isDeclined = true;
+  request.status = "declined";
+  await request.save();
+
+  return request;
+};
+
+const cancelLessonRequest = async (requestId: string) => {
+  const request = await LessonRequest.findById(requestId);
+
+  if (!request) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
+  }
+
+  if (request.status === "cancelled") {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "This request is already cancelled!"
+    );
+  }
+
+  if (request.isAccepted) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "Request is already accepted and cannot be cancelled!"
+    );
+  }
+
+  request.status = "cancelled";
   await request.save();
 
   return request;
@@ -502,4 +530,5 @@ export const LessonRequestServices = {
   declineLessonRequest,
   acceptRequest,
   getMyUpcomingLessonRequest,
+  cancelLessonRequest,
 };

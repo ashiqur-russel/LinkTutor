@@ -83,6 +83,19 @@ const declineLessonRequest = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const cancelessonRequest = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const updatedRequest = await LessonRequestServices.cancelLessonRequest(id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Lesson request cancelled successfully!",
+    data: updatedRequest,
+  });
+});
+
 export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -107,4 +120,5 @@ export const lessonRequestControllers = {
   declineLessonRequest,
   acceptRequest,
   getMyUpcomingLessonRequest,
+  cancelessonRequest,
 };

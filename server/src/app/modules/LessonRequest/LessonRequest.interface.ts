@@ -12,7 +12,7 @@ export interface ILessonRequest extends Document {
   sessionEnd: Date;
   isAccepted?: boolean;
   isDeclined?: boolean;
-  status: "pending" | "accepted" | "cancelled";
+  status: "pending" | "accepted" | "cancelled" | "declined";
   createdAt?: Date;
   updatedAt?: Date;
 }
