@@ -37,6 +37,23 @@ export const getMyLessonRequest = catchAsync(
   }
 );
 
+export const getMyUpcomingLessonRequest = catchAsync(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    const { result, meta } =
+      await LessonRequestServices.getMyUpcomingLessonRequest(userId, req.query);
+
+    sendResponse(res, {
+      statusCode: 201,
+      success: true,
+      message: "Upcoming Lesson request fetched successfully",
+      data: result,
+      meta: meta,
+    });
+  }
+);
+
 export const getAllLessonRequests = catchAsync(
   async (req: Request, res: Response) => {
     const { result, meta } = await LessonRequestServices.getAllLessonRequests(
@@ -89,4 +106,5 @@ export const lessonRequestControllers = {
   getAllLessonRequests,
   declineLessonRequest,
   acceptRequest,
+  getMyUpcomingLessonRequest,
 };

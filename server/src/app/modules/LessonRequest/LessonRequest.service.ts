@@ -369,6 +369,37 @@ const getMyLessonRequest = async (
 
   return { result, meta };
 };
+
+const getMyUpcomingLessonRequest = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
+  const user = await (User as any).checkUserExist(userId);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User does not exist!");
+  }
+
+  let filter = {};
+  const currentDate = new Date();
+
+  if (user.role === UserRole.STUDENT) {
+    filter = { studentId: userId, sessionDate: { $gte: currentDate } };
+  } else if (user.role === UserRole.TUTOR) {
+    filter = { tutorId: userId, sessionDate: { $gte: currentDate } };
+  }
+
+  const lessonQuery = new QueryBuilder(LessonRequest.find(filter), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await lessonQuery.modelQuery;
+  const meta = await lessonQuery.countTotal();
+
+  return { result, meta };
+};
+
 /**
  * Tutor declines a lesson request by ID.
  * @param requestId The _id of the lesson request document
@@ -470,4 +501,5 @@ export const LessonRequestServices = {
   getMyLessonRequest,
   declineLessonRequest,
   acceptRequest,
+  getMyUpcomingLessonRequest,
 };

@@ -12,6 +12,10 @@ router.post(
 router.get("/", lessonRequestControllers.getAllLessonRequests);
 
 router.get("/:userId/my-request", lessonRequestControllers.getMyLessonRequest);
+router.get(
+  "/:userId/my-future-request",
+  lessonRequestControllers.getMyUpcomingLessonRequest
+);
 
 router.post(
   "/:id/decline-request",

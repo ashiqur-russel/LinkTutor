@@ -1,51 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-export const getMyRequest = async (
-  filters?: Record<string, any>,
-  page?: string,
-  limit?: string
+export const fetchMyLessonRequests = async (
+  userId: string,
+  filters?: Record<string, any>
 ) => {
   try {
-    const queryParams = new URLSearchParams();
-
-    if (page) queryParams.append("page", page);
-    if (limit) queryParams.append("limit", limit);
-
-    if (filters?.availability) {
-      queryParams.append("availability", filters.availability.join(","));
-    }
-
-    if (filters?.subjects) {
-      queryParams.append("subjects", filters.subjects.join(","));
-    }
-
-    if (filters?.Ratings) {
-      queryParams.append("Ratings", filters?.Ratings.map(String).join(","));
-    }
-
-    if (filters?.HourRate) {
-      queryParams.append(
-        "HourRate",
-        `${filters.HourRate[0]}-${filters.HourRate[1]}`
-      );
-    }
-
-    console.log("Fetching Tutors with Query:", queryParams.toString());
-
+    const queryParams = new URLSearchParams(filters);
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/tutor?${queryParams.toString()}`,
-      {
-        next: {
-          tags: ["TUTOR"],
-        },
-      }
+      `${
+        process.env.NEXT_PUBLIC_BASE_API
+      }/request/${userId}/my-request?${queryParams.toString()}`
     );
-
     const data = await res.json();
     return data;
-  } catch (error: any) {
-    console.error("Error fetching tutors:", error);
-    return Error(error.message);
+  } catch (error) {
+    console.error("Error fetching lesson requests:", error);
+    return { result: [], meta: {} };
+  }
+};
+
+export const fetchMyFutureLessonRequests = async (
+  userId: string,
+  filters?: Record<string, any>
+) => {
+  try {
+    const queryParams = new URLSearchParams(filters);
+    const res = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_BASE_API
+      }/request/${userId}/my-future-request?${queryParams.toString()}`
+    );
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching lesson requests:", error);
+    return { result: [], meta: {} };
   }
 };
