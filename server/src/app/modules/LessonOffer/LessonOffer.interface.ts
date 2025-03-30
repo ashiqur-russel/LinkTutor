@@ -5,6 +5,7 @@ export interface ILessonOffer extends Document {
   tutorId: Types.ObjectId;
   studentId: Types.ObjectId;
   subject: string;
+  type: string;
   duration: string | number;
   sessionDate: Date;
   sessionStart: Date;

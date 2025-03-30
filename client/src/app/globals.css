@@ -139,6 +139,11 @@
     @apply border-[2px] border-[#9f8634] text-[#9f8634] px-4 py-2 rounded-md font-medium shadow-md 
            hover:bg-[#9f8634] hover:text-white transition duration-200;
   }
+
+  .btn-decline{
+    @apply bg-[#c05050]  text-[#f5f3ee] px-4 py-2 rounded-md font-medium shadow-md 
+           hover:bg-[#fb6f6f] hover:text-white transition duration-200;
+  }
   
 }
 

@@ -36,18 +36,16 @@ const FilterSidebar = ({
     "Friday",
   ];
 
-  // Call API when filters change
   useEffect(() => {
-    onFilterChange(filters); // Pass the updated filters to the parent
+    onFilterChange(filters);
   }, [filters, onFilterChange]);
 
-  // Handle checkbox changes
   const handleCheckboxChange = (
     category: "availability" | "subjects" | "Ratings",
     value: string | number
   ) => {
     setFilters((prev) => {
-      const newValues = prev[category].includes(value)
+      const newValues = (prev[category] as (string | number)[]).includes(value)
         ? prev[category].filter((item) => item !== value)
         : [...prev[category], value];
 

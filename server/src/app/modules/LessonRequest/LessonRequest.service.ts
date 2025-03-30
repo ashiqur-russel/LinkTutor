@@ -27,7 +27,7 @@ import { bookingServices } from "../booking/booking.service";
  * 4. If any existing request (pending, accepted, or declined) overlaps the same timeslot,
  *    block the new request.
  */
-const createLessonRequest = async (payload: ILessonRequest) => {
+const createLessonRequest1 = async (payload: ILessonRequest) => {
   // 1. Tutor must exist & be active
   const tutorUser = await Tutor.findById(payload.tutorId);
   if (!tutorUser || tutorUser.role !== UserRole.TUTOR) {
@@ -172,6 +172,154 @@ const createLessonRequest = async (payload: ILessonRequest) => {
   return result;
 };
 
+const createLessonRequest = async (payload: ILessonRequest) => {
+  // 1. Tutor must exist & be active
+  const tutorUser = await Tutor.findById(payload.tutorId);
+  if (!tutorUser || tutorUser.role !== UserRole.TUTOR) {
+    throw new AppError(
+      StatusCodes.NOT_FOUND,
+      "Tutor does not exist or is not active!"
+    );
+  }
+
+  // Student must exist & be active
+  const studentUser = await Student.findById(payload.studentId);
+  if (!studentUser || studentUser.role !== UserRole.STUDENT) {
+    throw new AppError(
+      StatusCodes.NOT_FOUND,
+      "Student does not exist or is not active!"
+    );
+  }
+
+  // Convert sessionStart/sessionEnd to Date objects (UTC)
+  const sessionStart = new Date(payload.sessionStart);
+  const sessionEnd = new Date(payload.sessionEnd);
+
+  // Must be in the future
+  const now = new Date();
+  if (sessionStart <= now) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "Cannot request a lesson in the past or at the current time."
+    );
+  }
+  // Must be strictly after sessionStart
+  if (sessionEnd <= sessionStart) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "sessionEnd must be after sessionStart."
+    );
+  }
+
+  // Calculate session duration in minutes
+  const sessionDiffMins = (sessionEnd.getTime() - sessionStart.getTime()) / (1000 * 60);
+  if (sessionDiffMins !== 60 && sessionDiffMins !== 120) {
+    throw new AppError(
+      StatusCodes.NOT_ACCEPTABLE,
+      "Session must be exactly 1 hour or 2 hours!"
+    );
+  }
+
+  // Check tutor’s weekday availability
+  const requestedDate = new Date(payload.sessionDate);
+  const requestedWeekday = getUtcWeekdayName(requestedDate);
+
+  const dayAvailability = tutorUser.availability?.find(
+    (slot) => slot.day === requestedWeekday
+  );
+  if (!dayAvailability) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      `Tutor is not available on ${requestedWeekday}.`
+    );
+  }
+
+  // Convert availability to minutes from midnight (UTC) / e.g. "11:00" => 660
+  const avStartMins = parseTimeToMinutes(dayAvailability.startTime);
+  const avEndMins = parseTimeToMinutes(dayAvailability.endTime);
+
+  // Convert the session times to total UTC minutes
+  const requestedStartMins = getUTCMinutes(sessionStart);
+  const requestedEndMins = getUTCMinutes(sessionEnd);
+
+  // If the requested time is outside the tutor's availability
+  if (requestedStartMins < avStartMins || requestedEndMins > avEndMins) {
+    const sessionStartStr = format(sessionStart, "HH:mm");
+    const sessionEndStr = format(sessionEnd, "HH:mm");
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      `Tutor not available for requested slot: ${sessionStartStr} - ${sessionEndStr} on ${requestedWeekday}.`
+    );
+  }
+
+  //  Tutor must teach the requested subject
+  if (!tutorUser.subjects?.includes(payload.subject)) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      `Tutor does not teach the subject '${payload.subject}'.`
+    );
+  }
+
+  // BLOCK if ANY existing request (pending, accepted, or declined)
+  //    overlaps the same timeslot for the same student & tutor
+  const overlappingRequest = await LessonRequest.findOne({
+    tutorId: payload.tutorId,
+    studentId: payload.studentId,
+    sessionDate: payload.sessionDate,
+    isDeclined: false,
+
+    $or: [
+      {
+        sessionStart: { $lt: payload.sessionEnd },
+        sessionEnd: { $gt: payload.sessionStart },
+      },
+    ],
+  });
+  if (overlappingRequest) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "A request or booking for this timeslot already exists "
+    );
+  }
+
+  // Check timeslot availability for the tutor (Bookings) => partial booking logic
+  const isTutorSlotAvailable = await checkTimeslotAvailability({
+    userId: payload.tutorId,
+    role: UserRole.TUTOR,
+    sessionDate: payload.sessionDate,
+    sessionStart: payload.sessionStart,
+    sessionEnd: payload.sessionEnd,
+  });
+  if (!isTutorSlotAvailable) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "Tutor timeslot is not available!"
+    );
+  }
+
+  // Check timeslot availability for the student (Bookings)
+  const isStudentSlotAvailable = await checkTimeslotAvailability({
+    userId: payload.studentId,
+    role: UserRole.STUDENT,
+    sessionDate: payload.sessionDate,
+    sessionStart: payload.sessionStart,
+    sessionEnd: payload.sessionEnd,
+  });
+  if (!isStudentSlotAvailable) {
+    throw new AppError(
+      StatusCodes.CONFLICT,
+      "Student timeslot is not available!"
+    );
+  }
+
+  // Finally, create the lesson request
+  const result = await LessonRequest.create({
+    ...payload,
+    duration: sessionDiffMins / 60,
+  });
+  return result;
+};
+
 // Retrieve all lesson requests (admin/debugging)
 const getAllLessonRequests = async () => {
   return LessonRequest.find({});
@@ -190,9 +338,10 @@ const getMyLessonRequest = async (userId: string) => {
   }
 
   if (user.role === UserRole.STUDENT) {
-    return LessonRequest.find({ studentId: userId });
+    console.log("find lesson request");
+    return await LessonRequest.find({ studentId: userId });
   } else if (user.role === UserRole.TUTOR) {
-    return LessonRequest.find({ tutorId: userId });
+    return await LessonRequest.find({ tutorId: userId });
   }
 };
 

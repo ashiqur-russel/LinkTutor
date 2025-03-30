@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IBooking } from "./booking.interface";
-import { BookingStatus, CanceledBy } from "./booking.constant";
+import { BookingStatus, BookingType, CanceledBy } from "./booking.constant";
 
 const BookingSchema: Schema<IBooking> = new Schema({
   tutorId: {
@@ -23,6 +23,7 @@ const BookingSchema: Schema<IBooking> = new Schema({
     ref: "LessonRequest",
     default: null,
   },
+  type: { type: String, default: BookingType.BOOKING },
   subject: { type: String, required: true },
   sessionDate: { type: Date, required: true },
   sessionStart: { type: Date },

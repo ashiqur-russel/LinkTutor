@@ -1,5 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { ILessonRequest } from "./lessonRequest.interface";
+import { BookingType } from "../booking/booking.constant";
 
 const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
   tutorId: {
@@ -17,6 +18,8 @@ const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
     enum: ["pending", "accepted", "cancelled"],
     default: "pending",
   },
+  type: { type: String, default: BookingType.REQUEST },
+
   subject: { type: String, required: true },
   duration: { type: Schema.Types.Mixed, required: true },
   sessionDate: { type: Date, required: true },

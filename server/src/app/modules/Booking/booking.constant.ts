@@ -15,3 +15,9 @@ export enum PaymentStatus {
   PAID = "paid",
   REFUNDED = "refunded",
 }
+
+export enum BookingType {
+  REQUEST = "request",
+  OFFER = "offer",
+  BOOKING = "booking",
+}

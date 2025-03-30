@@ -59,8 +59,14 @@ export default function Navbar() {
           <Link href="#" className="text-gray-800 hover:text-teal-600">
             NEWS
           </Link>
+          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
+            TUTORS
+          </Link>
           {user?.role === "student" && (
-            <Link href="#" className="text-gray-800 hover:text-teal-600">
+            <Link
+              href="/student/lesson-request"
+              className="text-gray-800 hover:text-teal-600"
+            >
               MY REQUEST
             </Link>
           )}
@@ -168,9 +174,15 @@ export default function Navbar() {
           <Link href="#" className="block text-gray-800 hover:text-teal-600">
             NEWS
           </Link>
+          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
+            TUTORS
+          </Link>
 
           {user?.role === "student" && (
-            <Link href="#" className="text-gray-800 hover:text-teal-600">
+            <Link
+              href="/student/lesson-request"
+              className="text-gray-800 hover:text-teal-600"
+            >
               MY REQUEST
             </Link>
           )}
