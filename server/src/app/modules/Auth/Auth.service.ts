@@ -67,14 +67,17 @@ const loginUser = async (payload: IAuth) => {
 };
 
 const refreshToken = async (token: string) => {
+  console.log("first", token);
   let verifiedToken = null;
   try {
-    verifiedToken = verifyToken(token, config.jwt_refresh_secret as string);
+    verifiedToken = verifyToken(token, config.jwt_access_secret as string);
+    console.log("verify:", verifiedToken);
   } catch (err) {
     throw new AppError(StatusCodes.FORBIDDEN, "Invalid Refresh Token");
   }
 
   const { userId } = verifiedToken;
+  console.log("user Id:", userId);
 
   const isUserExist = await User.findById(userId);
   if (!isUserExist) {

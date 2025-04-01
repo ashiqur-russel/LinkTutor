@@ -12,7 +12,7 @@ const LessonRequestPage = async () => {
   return (
     <div className="flex flex-col items-center w-[80%] m-auto">
       <LessonOffer requests={lessonRequest} />
-      <AllRequest requests={lessonRequest} role={user.role} />
+      <AllRequest requests={lessonRequest} role={user?.role} />
     </div>
   );
 };

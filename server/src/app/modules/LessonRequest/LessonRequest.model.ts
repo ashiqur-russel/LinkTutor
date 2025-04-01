@@ -15,7 +15,7 @@ const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "cancelled"],
+    enum: ["pending", "accepted", "cancelled", "declined"],
     default: "pending",
   },
   type: { type: String, default: BookingType.REQUEST },

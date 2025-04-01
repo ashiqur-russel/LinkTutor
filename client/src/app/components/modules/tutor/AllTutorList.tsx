@@ -9,7 +9,11 @@ import { getAllTutors } from "@/app/services/TutorService";
 import Spinner from "@/components/ui/spinner";
 import TutorInfoCard from "./TutorInfoCard";
 
-const AllTutorList: React.FC = () => {
+interface ALlTutorProps {
+  userId: string;
+}
+
+const AllTutorList = ({ userId }: ALlTutorProps) => {
   const [tutors, setTutors] = useState<ITutor[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [filters, setFilters] = useState({
@@ -64,7 +68,7 @@ const AllTutorList: React.FC = () => {
           </div>
         ) : (
           tutors.map((tutor) => (
-            <TutorInfoCard key={tutor.email} tutor={tutor} />
+            <TutorInfoCard key={tutor.email} tutor={tutor} studentId={userId} />
           ))
         )}
       </div>

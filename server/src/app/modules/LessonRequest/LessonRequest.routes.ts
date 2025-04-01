@@ -9,6 +9,7 @@ const router = Router();
 
 router.post(
   "/create-lesson-request",
+  auth(UserRole.STUDENT),
   lessonRequestControllers.createLessonRequest
 );
 
@@ -27,7 +28,7 @@ router.post(
 
 router.post(
   "/:id/cancel-request",
-  auth(UserRole.STUDENT),
+
   lessonRequestControllers.cancelessonRequest
 );
 

@@ -15,7 +15,6 @@ import { ITutor } from "@/app/types";
 
 export default async function TutorsPage() {
   const tutors = await getDisplayedTutor();
-  console.log(tutors);
 
   return (
     <section className="w-full py-10">

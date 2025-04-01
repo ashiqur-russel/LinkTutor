@@ -114,7 +114,7 @@ const getAllTutors = async (query: Record<string, unknown>) => {
   }
 
   TutorQuery.modelQuery = TutorQuery.modelQuery.select(
-    "name email hourRate subjects availability isActive rating -_id"
+    "name email hourRate subjects availability isActive rating _id"
   );
 
   const result = await TutorQuery.modelQuery;

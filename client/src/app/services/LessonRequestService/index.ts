@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { getValidToken } from "@/app/lib/verifyToken";
+import { revalidateTag } from "next/cache";
+
 export const fetchMyLessonRequests = async (
   userId: string,
   filters?: Record<string, any>
@@ -10,13 +13,68 @@ export const fetchMyLessonRequests = async (
     const res = await fetch(
       `${
         process.env.NEXT_PUBLIC_BASE_API
-      }/request/${userId}/my-request?${queryParams.toString()}`
+      }/request/${userId}/my-request?${queryParams.toString()}`,
+      {
+        next: { tags: ["LessonRequests"] },
+      }
     );
     const data = await res.json();
     return data;
   } catch (error) {
     console.error("Error fetching lesson requests:", error);
     return { result: [], meta: {} };
+  }
+};
+
+export const createLessonRequest1 = async (lessonData: any) => {
+  const token = await getValidToken();
+  console.log(token);
+
+  try {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/create-lesson-request`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(lessonData),
+      }
+    );
+    revalidateTag("LessonRequests");
+  } catch (error) {
+    console.error("Error creating lesson request:", error);
+  }
+};
+
+export const createLessonRequest = async (lessonData: any) => {
+  const token = await getValidToken();
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/create-lesson-request`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(lessonData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create lesson request");
+    }
+
+    revalidateTag("LessonRequests");
+    return data; // Return backend response
+  } catch (error) {
+    console.error("Error creating lesson request:", error);
+    throw error;
   }
 };
 
@@ -36,5 +94,29 @@ export const fetchMyFutureLessonRequests = async (
   } catch (error) {
     console.error("Error fetching lesson requests:", error);
     return { result: [], meta: {} };
+  }
+};
+
+export const cancelLessonRequest = async (requestId: string) => {
+  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/cancel-request`;
+  console.log("Cancel Request API URL:", apiUrl); // Log the complete URL
+
+  try {
+    console.log("client sevrice ", requestId);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/cancel-request`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to cancel request. Status: ${response.status}`);
+    }
+
+    revalidateTag("LessonRequests"); // Ensures cache revalidation
+  } catch (error) {
+    console.error("Error canceling lesson request:", error);
+    throw error;
   }
 };

@@ -1,3 +1,4 @@
+"use client";
 import { ILessonRequest } from "@/app/types/lesson";
 import { Button } from "@/components/ui/button";
 import React from "react";
@@ -25,7 +26,7 @@ const AllRequest = ({ requests, role }: AllRequestProps) => {
         </div>
       </div>
 
-      {requests.map((request) => (
+      {requests?.map((request) => (
         <div key={request._id}>
           {role === "student" && request.type === "offer" && (
             <div className="flex w-full border rounded-lg p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto">

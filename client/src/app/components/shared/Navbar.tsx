@@ -22,6 +22,7 @@ import { logout } from "@/app/services/AuthService";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setIsLoading } = useUser();
+  console.log(user);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -59,9 +60,11 @@ export default function Navbar() {
           <Link href="#" className="text-gray-800 hover:text-teal-600">
             NEWS
           </Link>
-          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
-            TUTORS
-          </Link>
+          {user?.role === "student" && (
+            <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
+              TUTORS
+            </Link>
+          )}
           {user?.role === "student" && (
             <Link
               href="/student/lesson-request"
@@ -71,7 +74,10 @@ export default function Navbar() {
             </Link>
           )}
           {user?.role === "tutor" && (
-            <Link href="#" className="text-gray-800 hover:text-teal-600">
+            <Link
+              href="/tutor/lesson-offer"
+              className="text-gray-800 hover:text-teal-600"
+            >
               MY OFFER
             </Link>
           )}

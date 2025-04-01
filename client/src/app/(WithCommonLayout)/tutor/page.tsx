@@ -1,13 +1,14 @@
 import AllTutorList from "@/app/components/modules/tutor/AllTutorList";
-import { getAllTutors } from "@/app/services/TutorService";
+import { getCurrentUser } from "@/app/services/AuthService";
 import React from "react";
 
 const TutorPage = async () => {
-  const { data, meta } = await getAllTutors();
-  console.log(data, meta);
+  const user = await getCurrentUser();
+  console.log(user);
+
   return (
     <div className="">
-      <AllTutorList tutor={data}  />{" "}
+      <AllTutorList userId={user?.userId} />{" "}
     </div>
   );
 };
