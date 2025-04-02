@@ -8,7 +8,7 @@ type LessonRequestProps = {
   requests: ILessonRequest[];
 };
 
-const LessonOffer = ({ requests }: LessonRequestProps) => {
+const LessonRequest = ({ requests }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -52,7 +52,7 @@ const LessonOffer = ({ requests }: LessonRequestProps) => {
       {requests?.map((request) => (
         <div
           key={request._id}
-          className="flex border rounded-lg p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
+          className="flex border rounded-lg  w-fit  md:w-full p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
         >
           <div className="flex-1 md:mx-2 font-bold">
             <p className="text-lg text-gray-600">Subject: {request.subject}</p>
@@ -68,26 +68,43 @@ const LessonOffer = ({ requests }: LessonRequestProps) => {
             </p>
           </div>
 
-          <div className="text-center mt-4 w-full md:w-80">
-            <button
-              onClick={() => handleCancelRequest(request._id)}
-              className={`btn-decline ${
-                request.status === "cancelled"
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : ""
-              }`}
-              disabled={
-                loading === request._id ||
-                isPending ||
-                request.status === "cancelled"
-              }
-            >
-              {loading === request._id
-                ? "Canceling..."
-                : request.status === "cancelled"
-                ? "Cancelled"
-                : "Cancel"}
-            </button>
+          <div className=" flex flex-col mt-4 w-full md:w-60 ">
+            {request.status !== "declined" && request.status !== "accepted" && (
+              <button
+                onClick={() => handleCancelRequest(request._id)}
+                className={`btn-decline ${
+                  request.status === "cancelled"
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={
+                  loading === request._id ||
+                  isPending ||
+                  request.status === "cancelled"
+                }
+              >
+                {loading === request._id
+                  ? "Canceling..."
+                  : request.status === "cancelled"
+                  ? "Cancelled"
+                  : "Cancel"}
+              </button>
+            )}
+
+            {request.status === "declined" && (
+              <button
+                className="btn-primary bg-gray-500 cursor-not-allowed"
+                disabled
+              >
+                Declined
+              </button>
+            )}
+
+            {request.status === "accepted" && (
+              <button className="btn-primary  cursor-not-allowed" disabled>
+                Accepted
+              </button>
+            )}
           </div>
         </div>
       ))}
@@ -95,4 +112,4 @@ const LessonOffer = ({ requests }: LessonRequestProps) => {
   );
 };
 
-export default LessonOffer;
+export default LessonRequest;

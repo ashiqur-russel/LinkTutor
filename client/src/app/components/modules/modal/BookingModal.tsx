@@ -23,7 +23,6 @@ interface BookingModalProps {
 const BookingModal = ({
   isOpen,
   onClose,
-  onSubmit,
   tutor,
   studentId,
 }: BookingModalProps) => {
@@ -106,40 +105,6 @@ const BookingModal = ({
     ? getAvailableTimes(selectedDate, selectedDuration)
     : [];
 
-  const handleSubmit1 = () => {
-    // Validation
-    const newErrors = {
-      date: !selectedDate,
-      time: !selectedTime,
-      subject: !selectedSubject,
-    };
-
-    setErrors(newErrors);
-
-    if (!newErrors.date && !newErrors.time && !newErrors.subject) {
-      if (!selectedDate || !selectedTime) return;
-      const startTime = new Date(selectedDate);
-      startTime.setHours(
-        parseInt(selectedTime.split(":")[0]),
-        parseInt(selectedTime.split(":")[1])
-      );
-
-      const endTime = new Date(startTime);
-      endTime.setHours(startTime.getHours() + selectedDuration);
-
-      const payload = {
-        tutorId: tutor._id,
-        studentId,
-        subject: selectedSubject,
-        sessionDate: selectedDate?.toISOString() || new Date().toISOString(),
-        sessionStart: startTime.toISOString(),
-        sessionEnd: endTime.toISOString(),
-      };
-
-      onSubmit?.(payload);
-    }
-  };
-
   const handleSubmit = async () => {
     const newErrors = {
       date: !selectedDate,
@@ -170,11 +135,9 @@ const BookingModal = ({
       };
 
       try {
-        console.log("Submitting lesson request:", payload);
-        const response = await createLessonRequest(payload); // Get response from backend
-
-        if (response.status === "success") {
-          toast.success("Lesson booked successfully!");
+        const response = await createLessonRequest(payload);
+        if (response.success) {
+          toast.success("Lesson Request sent successfully!");
           onClose();
         } else {
           toast.error(response.message || "Something went wrong.");

@@ -28,7 +28,6 @@ export const fetchMyLessonRequests = async (
 
 export const createLessonRequest1 = async (lessonData: any) => {
   const token = await getValidToken();
-  console.log(token);
 
   try {
     await fetch(
@@ -66,12 +65,12 @@ export const createLessonRequest = async (lessonData: any) => {
 
     const data = await response.json();
 
-    if (!response.ok) {
+    if (response.status !== 201) {
       throw new Error(data.message || "Failed to create lesson request");
     }
 
     revalidateTag("LessonRequests");
-    return data; // Return backend response
+    return data;
   } catch (error) {
     console.error("Error creating lesson request:", error);
     throw error;
@@ -98,11 +97,7 @@ export const fetchMyFutureLessonRequests = async (
 };
 
 export const cancelLessonRequest = async (requestId: string) => {
-  const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/cancel-request`;
-  console.log("Cancel Request API URL:", apiUrl); // Log the complete URL
-
   try {
-    console.log("client sevrice ", requestId);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/cancel-request`,
       {
@@ -114,7 +109,7 @@ export const cancelLessonRequest = async (requestId: string) => {
       throw new Error(`Failed to cancel request. Status: ${response.status}`);
     }
 
-    revalidateTag("LessonRequests"); // Ensures cache revalidation
+    revalidateTag("LessonRequests");
   } catch (error) {
     console.error("Error canceling lesson request:", error);
     throw error;

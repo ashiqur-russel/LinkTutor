@@ -66,7 +66,6 @@ const TutorInfoCard = ({ tutor, studentId }: TutorProps) => {
       <BookingModal
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
-        onSubmit={(data) => console.log("Booking Data:", data)}
         tutor={tutor}
         studentId={studentId}
       />

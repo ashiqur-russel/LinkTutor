@@ -31,8 +31,6 @@ export const getAllTutors = async (
       );
     }
 
-    console.log("Fetching Tutors with Query:", queryParams.toString());
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/tutor?${queryParams.toString()}`,
       {

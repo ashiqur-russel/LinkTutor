@@ -152,7 +152,7 @@ export default function RegisterTutorMultiStep() {
 
   const onSubmit: SubmitHandler<TutorFormData> = async (data) => {
     const body = { ...data, hourRate: Number(data.hourRate) };
-    console.log("Submitting multi-step form data:", body);
+
     try {
       const res = await registerTutor(body);
       setIsLoading(true);

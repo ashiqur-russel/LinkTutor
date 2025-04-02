@@ -1,4 +1,3 @@
-// lessonRequest.controller.ts
 import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
@@ -7,10 +6,7 @@ import { LessonRequestServices } from "./lessonRequest.service";
 
 export const createLessonRequest = catchAsync(
   async (req: Request, res: Response) => {
-    console.log("inside create lesson re controller");
-
     const data = await LessonRequestServices.createLessonRequest(req.body);
-    console.log("inside create lesson re controller data res:", data);
 
     sendResponse<ILessonRequest>(res, {
       statusCode: 201,
@@ -88,7 +84,6 @@ const declineLessonRequest = catchAsync(async (req: Request, res: Response) => {
 
 const cancelessonRequest = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log("inside cancel request controller");
 
   const updatedRequest = await LessonRequestServices.cancelLessonRequest(id);
 

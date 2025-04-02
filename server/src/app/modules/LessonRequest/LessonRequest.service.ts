@@ -416,7 +416,6 @@ const declineLessonRequest = async (requestId: string) => {
 };
 
 const cancelLessonRequest = async (requestId: string) => {
-  console.log("hello ");
   const request = await LessonRequest.findById(requestId);
 
   if (!request) {

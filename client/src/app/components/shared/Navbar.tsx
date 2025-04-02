@@ -22,7 +22,6 @@ import { logout } from "@/app/services/AuthService";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setIsLoading } = useUser();
-  console.log(user);
   const pathname = usePathname();
   const router = useRouter();
 
