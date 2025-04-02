@@ -4,7 +4,6 @@ import React from "react";
 
 const TutorPage = async () => {
   const user = await getCurrentUser();
-  console.log(user);
 
   return (
     <div className="">

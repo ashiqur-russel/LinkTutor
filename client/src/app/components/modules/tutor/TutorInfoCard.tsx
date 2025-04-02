@@ -15,7 +15,6 @@ type TutorProps = {
 
 const TutorInfoCard = ({ tutor, studentId }: TutorProps) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  console.log(tutor);
 
   return (
     <div className="flex border rounded-lg p-4 shadow-md items-center justify-center flex-col md:flex-row  max-h-[250px]">
