@@ -52,6 +52,15 @@ This diagram visualizes the journey of a lesson request — from initiation to c
 
 ![Lesson Request and Booking Flow](./LessonRequestBookingFlow.svg)
 
+
+### Payment Integration Flow for LinkTutor (Planned...)
+
+## Flow Summary
+- Student sends a Lesson Request.
+- Tutor receives it and can Accept or Decline.
+- If Declined → ❌ No booking created, no payment processed.
+- If Accepted → ✅ Booking created → Payment processed.
+
 ### Screenshots
 
 - **Home Page:**
