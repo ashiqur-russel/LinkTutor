@@ -38,6 +38,20 @@ Below a diagram that provides an overview of the platform's architecture:
 
 ![ERD Diagram](./LinkTutor_erd.png)
 
+### Lesson Request and Booking Flow
+
+This diagram visualizes the journey of a lesson request — from initiation to completion — including the different states and actions available to both students and tutors. It reflects how users interact with the platform and how the backend supports this flow.
+
+📌 **Highlights:**
+
+- Students can initiate booking requests by selecting a subject, date, and time.
+- Tutors receive requests and can either accept or decline them.
+- Upon acceptance, a Booking is created.
+- Both students and tutors can view and manage upcoming, past, or paid sessions.
+- UI accommodates cancellation logic and session status tagging (e.g., PAID, UPCOMING, PAST).
+
+![Lesson Request and Booking Flow](./LessonRequestBookingFlow.svg)
+
 ### Screenshots
 
 - **Home Page:**

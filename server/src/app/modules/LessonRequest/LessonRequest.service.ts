@@ -450,6 +450,8 @@ const cancelLessonRequest = async (requestId: string) => {
  * - Use a transaction for atomicity
  */
 export const acceptRequest = async (requestId: string) => {
+  console.log("inside accept request");
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -458,6 +460,8 @@ export const acceptRequest = async (requestId: string) => {
     if (!request) {
       throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
     }
+
+    console.log("inside accept request get req:", request);
 
     if (request.isDeclined) {
       throw new AppError(
@@ -473,6 +477,7 @@ export const acceptRequest = async (requestId: string) => {
     }
 
     request.isAccepted = true;
+    request.status = "accepted";
     await request.save({ session });
 
     // Create a booking using the createBooking function

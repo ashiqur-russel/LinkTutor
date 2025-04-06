@@ -96,6 +96,7 @@ const cancelessonRequest = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
+  console.log("inside accept reqiest by tutor");
   const { id } = req.params;
 
   const { request, booking } = await LessonRequestServices.acceptRequest(id);
