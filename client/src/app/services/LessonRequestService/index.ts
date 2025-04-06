@@ -81,12 +81,21 @@ export const fetchMyFutureLessonRequests = async (
   userId: string,
   filters?: Record<string, any>
 ) => {
+  const token = await getValidToken();
+
   try {
     const queryParams = new URLSearchParams(filters);
     const res = await fetch(
       `${
         process.env.NEXT_PUBLIC_BASE_API
-      }/request/${userId}/my-future-request?${queryParams.toString()}`
+      }/request/${userId}/my-future-request?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }
     );
     const data = await res.json();
     return data;
@@ -97,11 +106,16 @@ export const fetchMyFutureLessonRequests = async (
 };
 
 export const cancelLessonRequest = async (requestId: string) => {
+  const token = await getValidToken();
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/cancel-request`,
       {
         method: "POST",
+        headers: {
+          Authorization: token,
+        },
       }
     );
 
@@ -112,6 +126,55 @@ export const cancelLessonRequest = async (requestId: string) => {
     revalidateTag("LessonRequests");
   } catch (error) {
     console.error("Error canceling lesson request:", error);
+    throw error;
+  }
+};
+
+export const declineLessonRequest = async (requestId: string) => {
+  const token = await getValidToken();
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/decline-request`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to decline request. Status: ${response.status}`);
+    }
+
+    revalidateTag("LessonRequests");
+  } catch (error) {
+    console.error("Error declining lesson request:", error);
+    throw error;
+  }
+};
+export const acceptLessonRequest = async (requestId: string) => {
+  const token = await getValidToken();
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/${requestId}/accept-request`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to accept request. Status: ${response.status}`);
+    }
+
+    revalidateTag("LessonRequests");
+  } catch (error) {
+    console.error("Error accepting lesson request:", error);
     throw error;
   }
 };
