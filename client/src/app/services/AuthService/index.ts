@@ -3,6 +3,7 @@
 
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 
 export const registerStudent = async (userData: FieldValues) => {
@@ -59,6 +60,7 @@ export const registerTutor = async (userData: FieldValues) => {
 
 export const logout = async () => {
   (await cookies()).delete("accessToken");
+  redirect("/login");
 };
 
 export const loginUser = async (userData: FieldValues) => {

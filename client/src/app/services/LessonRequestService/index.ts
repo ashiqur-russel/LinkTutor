@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { getValidToken } from "@/app/lib/verifyToken";
+import { getValidTokenWithCookie } from "@/app/actions/refreshToken";
 import { revalidateTag } from "next/cache";
 
 export const fetchMyLessonRequests = async (
@@ -27,7 +27,7 @@ export const fetchMyLessonRequests = async (
 };
 
 export const createLessonRequest1 = async (lessonData: any) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   try {
     await fetch(
@@ -48,7 +48,7 @@ export const createLessonRequest1 = async (lessonData: any) => {
 };
 
 export const createLessonRequest = async (lessonData: any) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_API}/request/create-lesson-request`,
@@ -77,7 +77,7 @@ export const fetchMyFutureLessonRequests = async (
   userId: string,
   filters?: Record<string, any>
 ) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   try {
     const queryParams = new URLSearchParams(filters);
@@ -102,7 +102,7 @@ export const fetchMyFutureLessonRequests = async (
 };
 
 export const cancelLessonRequest = async (requestId: string) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   try {
     const response = await fetch(
@@ -127,7 +127,7 @@ export const cancelLessonRequest = async (requestId: string) => {
 };
 
 export const declineLessonRequest = async (requestId: string) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   try {
     const response = await fetch(
@@ -151,7 +151,7 @@ export const declineLessonRequest = async (requestId: string) => {
   }
 };
 export const acceptLessonRequest = async (requestId: string) => {
-  const token = await getValidToken();
+  const token = await getValidTokenWithCookie();
 
   try {
     const response = await fetch(
