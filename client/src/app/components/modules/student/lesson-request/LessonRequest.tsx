@@ -2,6 +2,8 @@
 
 import { cancelLessonRequest } from "@/app/services/LessonRequestService";
 import { ILessonRequest } from "@/app/types/lesson";
+import { formatDate } from "@/lib/formatdate";
+import { formatTime } from "@/lib/formatTime";
 import { useState, useTransition } from "react";
 
 type LessonRequestProps = {
@@ -11,22 +13,6 @@ type LessonRequestProps = {
 const LessonRequest = ({ requests }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    });
-  };
 
   const handleCancelRequest = async (requestId: string) => {
     if (

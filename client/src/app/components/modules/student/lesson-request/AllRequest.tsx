@@ -1,6 +1,8 @@
 "use client";
+
 import { ILessonRequest } from "@/app/types/lesson";
 import { Button } from "@/components/ui/button";
+import { formatTime } from "@/lib/formatTime";
 import React from "react";
 
 type AllRequestProps = {
@@ -9,17 +11,10 @@ type AllRequestProps = {
 };
 
 const AllRequest = ({ requests, role }: AllRequestProps) => {
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
     <div className="w-[80%] mt-10 m-auto">
       <div className="flex justify-between gap-3 mb-3">
-        <h1 className="text-lg p-1 font-bold">Lesson Request</h1>
+        <h1 className="text-lg p-1 font-bold"> Bookings</h1>
         <div className="flex justify-end gap-3">
           <Button className="min-w-3/12 md:min-w-2/12">PAST</Button>
           <Button className="min-w-3/12 md:min-w-2/12">UPCOMING</Button>
