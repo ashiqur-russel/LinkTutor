@@ -61,6 +61,11 @@ This diagram visualizes the journey of a lesson request — from initiation to c
 - If Declined → ❌ No booking created, no payment processed.
 - If Accepted → ✅ Booking created → Payment processed.
 
+### Booking Process Payment flow daigram
+
+![Lesson Request and Booking Payment Flow](./payment_flow_linktutor.svg)
+
+
 ### Screenshots
 
 - **Home Page:**
