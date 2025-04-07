@@ -50,31 +50,27 @@ export const createLessonRequest1 = async (lessonData: any) => {
 export const createLessonRequest = async (lessonData: any) => {
   const token = await getValidToken();
 
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/request/create-lesson-request`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify(lessonData),
-      }
-    );
-
-    const data = await response.json();
-
-    if (response.status !== 201) {
-      throw new Error(data.message || "Failed to create lesson request");
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_API}/request/create-lesson-request`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify(lessonData),
     }
+  );
 
-    revalidateTag("LessonRequests");
-    return data;
-  } catch (error) {
-    console.error("Error creating lesson request:", error);
-    throw error;
-  }
+  const data = await response.json();
+  console.log(data);
+
+  // if (response.status !== 201) {
+  //   throw new Error(data.message || "Failed to create lesson request");
+  // }
+
+  // revalidateTag("LessonRequests");
+  return data;
 };
 
 export const fetchMyFutureLessonRequests = async (

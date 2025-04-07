@@ -1,5 +1,11 @@
 import { Document, Types } from "mongoose";
-
+export type PaymentStatus =
+  | "hold"
+  | "paid"
+  | "complete"
+  | "failed"
+  | "cancelled";
+  
 export interface ILessonRequest extends Document {
   _id: Types.ObjectId;
   tutorId: Types.ObjectId;
@@ -15,4 +21,6 @@ export interface ILessonRequest extends Document {
   status: "pending" | "accepted" | "cancelled" | "declined";
   createdAt?: Date;
   updatedAt?: Date;
+  paymentStatus: PaymentStatus;
+  paymentIntentId?: string;
 }

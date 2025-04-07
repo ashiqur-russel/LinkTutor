@@ -31,7 +31,7 @@ export interface IBooking extends Document {
   cancelReason?: string | null;
   cancellationTime?: Date;
   bookingStatus?: BookingStatus;
-  paymentStatus?: PaymentStatus;
+  paymentStatus: PaymentStatus;
   paymentId?: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;

@@ -7,9 +7,10 @@ import router from "./app/routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 
 const app: Application = express();
+app.post("/api/v1/payment/webhook", express.raw({ type: "application/json" }));
 
 // Middleware setup
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

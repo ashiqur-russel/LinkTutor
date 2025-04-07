@@ -24,6 +24,12 @@ export default {
   cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
   sender_email: process.env.SENDER_EMAIL,
   sender_app_password: process.env.SENDER_APP_PASS,
+  stripe: {
+    stripe_secret_key: process.env.STRIPE_SECRET_KEY,
+    frontend_url: process.env.FRONTEND_URL,
+    stripe_webhook_id: process.env.SRIPE_WEB_HOOK_ID,
+    stripe_webhook_secret_local: process.env.STRIPE_WEB_HOOK_SECRET_LOCAL,
+  },
   ssl: {
     store_name: process.env.STORE_NAME,
     payment_api: process.env.PAYMENT_API,

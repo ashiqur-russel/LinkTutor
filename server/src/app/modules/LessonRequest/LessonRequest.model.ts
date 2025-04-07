@@ -21,6 +21,12 @@ const LessonRequestSchema: Schema<ILessonRequest> = new Schema({
   type: { type: String, default: BookingType.REQUEST },
 
   subject: { type: String, required: true },
+  paymentIntentId: { type: String, required: false },
+  paymentStatus: {
+    type: String,
+    enum: ["hold", "paid", "cancelled", "failed"],
+    required: false,
+  },
   duration: { type: Schema.Types.Mixed, required: true },
   sessionDate: { type: Date, required: true },
   sessionStart: { type: Date, required: true },

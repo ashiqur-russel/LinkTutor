@@ -12,6 +12,10 @@ import { ITutor } from "@/app/types";
 import { createLessonRequest } from "@/app/services/LessonRequestService";
 import { toast } from "sonner";
 
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
+
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,6 +30,7 @@ const BookingModal = ({
   tutor,
   studentId,
 }: BookingModalProps) => {
+  console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState(1);
@@ -136,16 +141,28 @@ const BookingModal = ({
 
       try {
         const response = await createLessonRequest(payload);
-        if (response.success) {
-          toast.success("Lesson Request sent successfully!");
-          onClose();
+        console.log("Backend response:", response);
+
+        if (response.sessionId) {
+          const stripe = await stripePromise;
+          if (stripe) {
+            const result = await stripe.redirectToCheckout({
+              sessionId: response.sessionId,
+            });
+
+            if (result.error) {
+              toast.error(result.error.message);
+              console.log(result.error.message);
+            }
+          }
         } else {
-          toast.error(response.message || "Something went wrong.");
+          toast.error("Failed to retrieve the client secret.");
         }
       } catch (error: any) {
         toast.error(
           error.message || "Failed to book lesson. Please try again."
         );
+        console.log(error.message);
       }
     }
   };

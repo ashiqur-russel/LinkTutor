@@ -13,6 +13,8 @@ type TResponse<T> = {
   message?: string;
   meta?: TMeta;
   data?: T;
+  sessionId?: any | null;
+  clientSecret?: any | null;
 };
 
 const sendResponse = <T>(res: Response, data: TResponse<T>) => {
@@ -21,6 +23,8 @@ const sendResponse = <T>(res: Response, data: TResponse<T>) => {
     message: data.message,
     meta: data.meta,
     data: data.data,
+    sessionId: data.sessionId ?? undefined,
+    clientSecret: data.clientSecret ?? undefined,
   });
 };
 

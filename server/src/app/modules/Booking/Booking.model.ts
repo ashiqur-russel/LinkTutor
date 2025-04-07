@@ -1,6 +1,11 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IBooking } from "./booking.interface";
-import { BookingStatus, BookingType, CanceledBy } from "./booking.constant";
+import {
+  BookingStatus,
+  BookingType,
+  CanceledBy,
+  PaymentStatus,
+} from "./booking.constant";
 
 const BookingSchema: Schema<IBooking> = new Schema({
   tutorId: {
@@ -45,6 +50,11 @@ const BookingSchema: Schema<IBooking> = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Payment",
     default: null,
+  },
+  paymentStatus: {
+    type: String,
+    enum: Object.values(PaymentStatus),
+    default: PaymentStatus.UNPAID,
   },
 
   createdAt: { type: Date, default: Date.now },

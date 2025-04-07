@@ -2,17 +2,19 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ILessonRequest } from "./lessonRequest.interface";
-import { LessonRequestServices } from "./lessonRequest.service";
+import { LessonRequestServices } from "./LessonRequest.service";
 
 export const createLessonRequest = catchAsync(
   async (req: Request, res: Response) => {
-    const data = await LessonRequestServices.createLessonRequest(req.body);
+    const { sessionId } = await LessonRequestServices.createLessonRequest(
+      req.body
+    );
 
     sendResponse<ILessonRequest>(res, {
       statusCode: 201,
       success: true,
       message: "Lesson request created successfully",
-      data,
+      sessionId: sessionId,
     });
   }
 );
@@ -99,7 +101,7 @@ export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
   console.log("inside accept reqiest by tutor");
   const { id } = req.params;
 
-  const { request, booking } = await LessonRequestServices.acceptRequest(id);
+  const request = await LessonRequestServices.acceptRequest(id);
 
   // Return success
   sendResponse(res, {
@@ -108,7 +110,6 @@ export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
     message: "Lesson request accepted successfully, booking created!",
     data: {
       request,
-      booking,
     },
   });
 });
