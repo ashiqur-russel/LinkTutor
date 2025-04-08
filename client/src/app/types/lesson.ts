@@ -24,8 +24,8 @@ export enum BookingStatus {
 
 export interface IBooking {
   _id: string;
-  tutor: string;
-  student: string;
+  tutor: { name: string };
+  student: { name: string; classLevel: string };
   type: string;
   subject: string;
   sessionDate: Date;

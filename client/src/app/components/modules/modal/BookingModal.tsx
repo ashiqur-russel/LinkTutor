@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-import TutorLinkModal from "../shared/TutorLinkModal";
+import TutorLinkModal from "./shared/TutorLinkModal";
 
 import { Calendar } from "@/components/ui/calendar";
 

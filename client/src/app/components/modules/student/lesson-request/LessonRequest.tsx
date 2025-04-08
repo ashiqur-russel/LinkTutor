@@ -35,11 +35,11 @@ const LessonRequest = ({ requests }: LessonRequestProps) => {
   };
 
   return (
-    <div className="w-[80%] mt-10 m-auto">
+    <div className="w-[100%] md:w-full lg:w-[80%] mt-10 m-auto ">
       {requests?.map((request) => (
         <div
           key={request._id}
-          className="flex border rounded-lg  w-fit  md:w-full p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
+          className="flex border mb-2 rounded-lg  w-fit  md:w-full p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
         >
           <div className="flex-1 md:mx-2 font-bold">
             <p className="text-lg text-gray-600">Subject: {request.subject}</p>

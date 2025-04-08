@@ -26,6 +26,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-input: var(--input);
+  --color-link-green: var(--color-accent) 
 
   /* Button Colors */
   --color-button-primary: var(--button-primary);
@@ -53,9 +54,9 @@
   /* Secondary Colors */
   --secondary: #80c3bc;
   --secondary-foreground: #133954;
+  --green-low: #11aeaf
 
   /* Accent Colors */
-  --accent: #9faeb8;
   --accent-foreground: #133954;
 
   /* Muted Colors */
@@ -124,6 +125,10 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .bg-link-green{
+    background-color: var(--color-link-green);
   }
 
   /* Buttons */
