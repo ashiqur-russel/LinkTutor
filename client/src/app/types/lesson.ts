@@ -14,3 +14,28 @@ export interface ILessonRequest {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export enum BookingStatus {
+  ACTIVE = "active",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  HELD = "held",
+}
+
+export interface IBooking {
+  _id: string;
+  tutor: string;
+  student: string;
+  type: string;
+  subject: string;
+  sessionDate: Date;
+  sessionStart?: Date;
+  sessionEnd?: Date;
+  isCancelled?: boolean;
+  cancelReason?: string | null;
+  cancellationTime?: Date;
+  bookingStatus?: BookingStatus;
+  paymentStatus: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

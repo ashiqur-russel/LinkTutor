@@ -2,8 +2,9 @@
 
 import { cancelLessonRequest } from "@/app/services/LessonRequestService";
 import { ILessonRequest } from "@/app/types/lesson";
-import { formatDate } from "@/lib/formatdate";
-import { formatTime } from "@/lib/formatTime";
+import { formatTime } from "@/app/lib/formatTime";
+import { formatDate } from "@/app/lib/formatDate";
+
 import { useState, useTransition } from "react";
 
 type LessonRequestProps = {

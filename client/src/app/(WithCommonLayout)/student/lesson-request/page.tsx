@@ -1,4 +1,4 @@
-import AllRequest from "@/app/components/modules/student/lesson-request/AllRequest";
+import AllBookings from "@/app/components/modules/student/Bookings/AllBookings";
 import LessonRequest from "@/app/components/modules/student/lesson-request/LessonRequest";
 import { getCurrentUser } from "@/app/services/AuthService";
 import { fetchMyFutureLessonRequests } from "@/app/services/LessonRequestService";
@@ -12,7 +12,7 @@ const LessonRequestPage = async () => {
   return (
     <div className="flex flex-col items-center w-[80%] m-auto">
       <LessonRequest requests={lessonRequest} />
-      <AllRequest requests={lessonRequest} role={user?.role} />
+      <AllBookings role={user?.role} userId={user?.userId} />
     </div>
   );
 };
