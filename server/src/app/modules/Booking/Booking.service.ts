@@ -8,6 +8,7 @@ import AppError from "../../errors/appError";
 import { StatusCodes } from "http-status-codes";
 import { BookingStatus, CanceledBy } from "./booking.constant";
 import { LessonRequest } from "../lessonRequest/lessonRequest.model";
+import QueryBuilder from "../../builder/QueryBilder";
 
 const createBooking = async (
   payload: Partial<IBooking>,
@@ -20,22 +21,39 @@ const createBooking = async (
   return newBooking;
 };
 
-const getAllBookings = async () => {
-  return await Booking.find({});
+const getAllBookings = async (query: Record<string, unknown>) => {
+  const bookingQuery = new QueryBuilder(Booking.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await bookingQuery.modelQuery;
+  const meta = await bookingQuery.countTotal();
+
+  return { result, meta };
 };
 
-export const getUserBookings = async (userId: string) => {
+export const getUserBookings = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
+
+  const bookingQuery = new QueryBuilder(Booking.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
   const matchStage =
     user.role === UserRole.STUDENT
       ? { studentId: user._id }
       : { tutorId: user._id };
 
-  const bookings: IBooking[] = await Booking.aggregate([
+  const aggregatePipeline = [
     { $match: matchStage },
-
     {
       $lookup: {
         from: "users",
@@ -45,7 +63,6 @@ export const getUserBookings = async (userId: string) => {
       },
     },
     { $unwind: "$student" },
-
     {
       $lookup: {
         from: "users",
@@ -55,7 +72,6 @@ export const getUserBookings = async (userId: string) => {
       },
     },
     { $unwind: "$tutor" },
-
     {
       $project: {
         _id: 1,
@@ -71,9 +87,28 @@ export const getUserBookings = async (userId: string) => {
         "tutor.name": 1,
       },
     },
-  ]);
+  ];
 
-  return bookings;
+  const queryFilter = bookingQuery.modelQuery.getFilter();
+  if (Object.keys(queryFilter).length > 0) {
+    aggregatePipeline.push({ $match: queryFilter as any }); // Add filter stage with type assertion
+  }
+
+  if (typeof query?.sort === "string") {
+    const sort = query.sort.split(",").join(" ") || "-createdAt";
+    aggregatePipeline.push({ $sort: { [sort]: 1 } } as any);
+  }
+
+  const page = Number(query?.page) || 1;
+  const limit = Number(query?.limit) || 5;
+  const skip = (page - 1) * limit;
+  aggregatePipeline.push({ $skip: skip } as any, { $limit: limit } as any);
+
+  const result = await Booking.aggregate(aggregatePipeline);
+
+  const meta = await bookingQuery.countTotal();
+
+  return { result, meta };
 };
 
 export const getUserUpcomingBookings = async (userId: string) => {
