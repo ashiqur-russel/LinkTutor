@@ -72,11 +72,7 @@ const AllBookings = ({ role, result, meta }: AllBookingsProps) => {
       ))}
 
       {/* Pagination */}
-      <LinkTutorPagination
-        totalPage={meta.totalPage}
-        basePath={`/student/lesson-request`}
-        pageName={"booking"}
-      />
+      <LinkTutorPagination totalPage={meta.totalPage} pageName={"booking"} />
     </div>
   );
 };
