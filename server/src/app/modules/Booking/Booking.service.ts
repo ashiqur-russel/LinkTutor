@@ -25,13 +25,55 @@ const getAllBookings = async () => {
 };
 
 export const getUserBookings = async (userId: string) => {
-  const user = await User.find({ _id: userId });
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
 
-  if (user[0].role === UserRole.STUDENT) {
-    return await Booking.find({ studentId: userId });
-  } else {
-    return await Booking.find({ tutorId: userId });
-  }
+  const matchStage =
+    user.role === UserRole.STUDENT
+      ? { studentId: user._id }
+      : { tutorId: user._id };
+
+  const bookings: IBooking[] = await Booking.aggregate([
+    { $match: matchStage },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "studentId",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    { $unwind: "$student" },
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "tutorId",
+        foreignField: "_id",
+        as: "tutor",
+      },
+    },
+    { $unwind: "$tutor" },
+
+    {
+      $project: {
+        _id: 1,
+        type: 1,
+        subject: 1,
+        sessionDate: 1,
+        sessionStart: 1,
+        sessionEnd: 1,
+        bookingStatus: 1,
+        paymentStatus: 1,
+        "student.name": 1,
+        "student.classLevel": 1,
+        "tutor.name": 1,
+      },
+    },
+  ]);
+
+  return bookings;
 };
 
 export const getUserUpcomingBookings = async (userId: string) => {
