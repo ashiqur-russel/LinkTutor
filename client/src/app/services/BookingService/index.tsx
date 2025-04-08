@@ -2,14 +2,12 @@
 
 export const fetchMyBookings = async (
   userId: string,
-  filters?: Record<string, any>
+  page?: string,
+  limit?: string
 ) => {
   try {
-    const queryParams = new URLSearchParams(filters);
     const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_API
-      }/bookings/${userId}/?${queryParams.toString()}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/bookings/${userId}/?page=${page}&limit=${limit}`,
       {
         next: { tags: ["LessonRequests"] },
       }
@@ -17,7 +15,7 @@ export const fetchMyBookings = async (
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Error fetching lesson requests:", error);
+    console.error("Error fetching bookings:", error);
     return { result: [], meta: {} };
   }
 };

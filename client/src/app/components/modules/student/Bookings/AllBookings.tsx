@@ -2,26 +2,21 @@ import { Button } from "@/components/ui/button";
 import { formatTime } from "@/app/lib/formatTime";
 import React from "react";
 import { formatDate } from "@/app/lib/formatDate";
-import { fetchMyBookings } from "@/app/services/BookingService";
-import { IBooking } from "@/app/types";
+import { IBooking, PaginationMeta } from "@/app/types";
 import {
   subjectColorMap,
   subjectTagBaseClass,
   textInfoClass,
 } from "@/app/utils/booking/subjectColorMap";
+import LinkTutorPagination from "@/components/core/LinkTutorPagination";
 
 type AllBookingsProps = {
   role: string;
-  userId: string;
+  result: IBooking[];
+  meta: PaginationMeta;
 };
 
-const AllBookings = async ({ role, userId }: AllBookingsProps) => {
-  console.log("All bookings for", userId, role);
-
-  const {
-    data: { result },
-  } = await fetchMyBookings(userId);
-
+const AllBookings = ({ role, result, meta }: AllBookingsProps) => {
   const renderSubject = (subject: string) => {
     const colorClass = subjectColorMap[subject] || "bg-gray-500";
     return (
@@ -75,6 +70,13 @@ const AllBookings = async ({ role, userId }: AllBookingsProps) => {
           </div>
         </div>
       ))}
+
+      {/* Pagination */}
+      <LinkTutorPagination
+        totalPage={meta.totalPage}
+        basePath={`/student/lesson-request`}
+        pageName={"booking"}
+      />
     </div>
   );
 };

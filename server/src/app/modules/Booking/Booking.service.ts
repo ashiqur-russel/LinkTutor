@@ -91,7 +91,7 @@ export const getUserBookings = async (
 
   const queryFilter = bookingQuery.modelQuery.getFilter();
   if (Object.keys(queryFilter).length > 0) {
-    aggregatePipeline.push({ $match: queryFilter as any }); // Add filter stage with type assertion
+    aggregatePipeline.push({ $match: queryFilter as any });
   }
 
   if (typeof query?.sort === "string") {

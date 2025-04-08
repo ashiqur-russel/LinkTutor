@@ -75,16 +75,14 @@ export const createLessonRequest = async (lessonData: any) => {
 
 export const fetchMyFutureLessonRequests = async (
   userId: string,
-  filters?: Record<string, any>
+  page?: string,
+  limit?: string
 ) => {
   const token = await getValidTokenWithCookie();
 
   try {
-    const queryParams = new URLSearchParams(filters);
     const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_API
-      }/request/${userId}/my-future-request?${queryParams.toString()}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/request/${userId}/my-future-request?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers: {
@@ -94,7 +92,7 @@ export const fetchMyFutureLessonRequests = async (
       }
     );
     const data = await res.json();
-    return data;
+    return data; // Expected { result: [...], meta: {...} }
   } catch (error) {
     console.error("Error fetching lesson requests:", error);
     return { result: [], meta: {} };

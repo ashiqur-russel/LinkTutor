@@ -6,12 +6,15 @@ import { formatTime } from "@/app/lib/formatTime";
 import { formatDate } from "@/app/lib/formatDate";
 
 import { useState, useTransition } from "react";
+import LinkTutorPagination from "@/components/core/LinkTutorPagination";
+import { PaginationMeta } from "@/app/types";
 
 type LessonRequestProps = {
   requests: ILessonRequest[];
+  meta: PaginationMeta;
 };
 
-const LessonRequest = ({ requests }: LessonRequestProps) => {
+const LessonRequest = ({ requests, meta }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -95,6 +98,11 @@ const LessonRequest = ({ requests }: LessonRequestProps) => {
           </div>
         </div>
       ))}
+      <LinkTutorPagination
+        totalPage={meta.totalPage}
+        basePath={`/student/lesson-request`}
+        pageName={"request"}
+      />
     </div>
   );
 };
