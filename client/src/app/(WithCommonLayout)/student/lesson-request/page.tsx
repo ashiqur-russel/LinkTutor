@@ -8,14 +8,14 @@ import { fetchMyFutureLessonRequests } from "@/app/services/LessonRequestService
 const LessonRequestPage = async ({
   searchParams,
 }: {
-  searchParams?: { page?: string; pageName?: string };
+  searchParams: { page?: string; pageName?: string };
 }) => {
   const user = await getCurrentUser();
 
-  const currentPage = Number(searchParams?.page || 1);
-  const pageName = searchParams?.pageName;
+  const { page = "1", pageName } = await searchParams;
 
-  // Decide page numbers for each section
+  const currentPage = Number(page);
+
   const bookingPage = pageName === "booking" ? currentPage : 1;
   const lessonRequestPage = pageName === "lesson-request" ? currentPage : 1;
 
