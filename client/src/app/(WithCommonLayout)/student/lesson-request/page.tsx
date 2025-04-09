@@ -1,9 +1,9 @@
 import React from "react";
-import AllBookings from "@/app/components/modules/student/Bookings/AllBookings";
-import LessonRequest from "@/app/components/modules/student/lesson-request/LessonRequest";
-import { getCurrentUser } from "@/app/services/AuthService";
-import { fetchMyBookings } from "@/app/services/BookingService";
-import { fetchMyFutureLessonRequests } from "@/app/services/LessonRequestService";
+import AllBookings from "@/components/modules/student/Bookings/AllBookings";
+import LessonRequest from "@/components/modules/student/lesson-request/LessonRequest";
+import { getCurrentUser } from "@/services/AuthService";
+import { fetchMyBookings } from "@/services/BookingService";
+import { fetchMyFutureLessonRequests } from "@/services/LessonRequestService";
 
 const LessonRequestPage = async ({
   searchParams,

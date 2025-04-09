@@ -1,9 +1,9 @@
 "use client";
 
+import Footer from "@/components/shared/Footer";
 import dynamic from "next/dynamic";
-import Footer from "../components/shared/Footer";
 
-const ClientNavbar = dynamic(() => import("@/app/components/shared/Navbar"), {
+const ClientNavbar = dynamic(() => import("@/components/shared/Navbar"), {
   ssr: false,
 });
 
