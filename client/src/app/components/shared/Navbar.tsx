@@ -83,7 +83,7 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop: Right side (avatar or login) */}
-        <div className="hidden md:flex md:items-center md:ml-auto">
+        <div className="hidden md:flex md:items-center md:ml-auto ">
           {!user ? (
             <button className="btn-gold-outline">
               <Link href="/login">Login</Link>
@@ -96,11 +96,11 @@ export default function Navbar() {
                   <AvatarFallback>User</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-accent">
+              <DropdownMenuContent className=" bg-secondary mt-2">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Link href="/profile">Profile</Link>
+                  <Link href={`${user?.role}/profile`}>Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href={`/${user?.role}/dashboard`}>Dashboard</Link>
@@ -133,7 +133,7 @@ export default function Navbar() {
                   <AvatarFallback>User</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-accent">
+              <DropdownMenuContent className="bg-secondary mt-2">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
