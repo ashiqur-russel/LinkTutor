@@ -4,7 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { bookingServices } from "./booking.service";
 
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
-  const result = await bookingServices.getAllBookings();
+  const result = await bookingServices.getAllBookings(req.query);
 
   sendResponse(res, {
     statusCode: 200,
@@ -16,7 +16,7 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
 
 const getUserBookings = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const result = await bookingServices.getUserBookings(userId);
+  const result = await bookingServices.getUserBookings(userId, req.query);
 
   sendResponse(res, {
     statusCode: 200,

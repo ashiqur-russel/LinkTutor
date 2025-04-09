@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; // If you still want to use it for certain labels
+import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -26,16 +26,8 @@ import { toast } from "sonner";
 import { useUser } from "@/app/context/UserContext";
 import { useRouter } from "next/navigation";
 import { registerTutor } from "@/app/services/AuthService";
-
-const DAYS_OF_WEEK = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+import { TutorFormData } from "@/app/types";
+import { DAYS_OF_WEEK } from "@/app/const/availibity";
 
 const SUBJECT_OPTIONS = [
   "Mathematics",
@@ -47,27 +39,6 @@ const SUBJECT_OPTIONS = [
 ];
 
 const STEP_TITLES = ["Personal Info", "Address", "Availability"];
-
-type TutorFormData = {
-  name: string;
-  email: string;
-  password: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  phone: string;
-  availability: {
-    day: string;
-    startTime: string;
-    endTime: string;
-  }[];
-  subjects: string[];
-  hourRate: number;
-};
 
 export default function RegisterTutorMultiStep() {
   const form = useForm<TutorFormData>({
@@ -557,7 +528,7 @@ export default function RegisterTutorMultiStep() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-[var(--background)] text-[var(--foreground)] rounded shadow-md">
+    <div className="max-w-2xl mx-auto p-6 bg-[var(--background)] text-[var(--foreground)] rounded shadow-md mt-5">
       <h2 className="text-3xl font-bold text-center mb-6">Register as Tutor</h2>
 
       {renderStepIndicator()}

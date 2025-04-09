@@ -2,31 +2,21 @@
 
 import { cancelLessonRequest } from "@/app/services/LessonRequestService";
 import { ILessonRequest } from "@/app/types/lesson";
+import { formatTime } from "@/app/lib/formatTime";
+import { formatDate } from "@/app/lib/formatDate";
+
 import { useState, useTransition } from "react";
+import LinkTutorPagination from "@/components/core/LinkTutorPagination";
+import { PaginationMeta } from "@/app/types";
 
 type LessonRequestProps = {
   requests: ILessonRequest[];
+  meta: PaginationMeta;
 };
 
-const LessonRequest = ({ requests }: LessonRequestProps) => {
+const LessonRequest = ({ requests, meta }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    });
-  };
 
   const handleCancelRequest = async (requestId: string) => {
     if (
@@ -48,11 +38,11 @@ const LessonRequest = ({ requests }: LessonRequestProps) => {
   };
 
   return (
-    <div className="w-[80%] mt-10 m-auto">
+    <div className="w-[100%] md:w-full lg:w-[80%] mt-10 m-auto ">
       {requests?.map((request) => (
         <div
           key={request._id}
-          className="flex border rounded-lg  w-fit  md:w-full p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
+          className="flex border mb-2 rounded-lg  w-fit  md:w-full p-4 shadow-md items-center justify-center flex-col md:flex-row max-h-auto"
         >
           <div className="flex-1 md:mx-2 font-bold">
             <p className="text-lg text-gray-600">Subject: {request.subject}</p>
@@ -108,6 +98,11 @@ const LessonRequest = ({ requests }: LessonRequestProps) => {
           </div>
         </div>
       ))}
+      <LinkTutorPagination
+        totalPage={meta.totalPage}
+        basePath={`/student/lesson-request`}
+        pageName={"request"}
+      />
     </div>
   );
 };

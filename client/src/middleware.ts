@@ -4,8 +4,8 @@ import { jwtDecode } from "jwt-decode";
 const authRoutes = ["/login", "/register"];
 
 const roleBasedPrivateRoutes = {
-  student: [/^\/student/, /^\/tutor/, /^\/create-shop/],
-  tutor: [/^\/tutor\/profile/],
+  student: [/^\/student/, /^\/tutor/],
+  tutor: [/^\/tutor\/profile/, /^\/tutor\/lesson-offer/], // Include /lesson-offer here
   admin: [/^\/admin/],
 };
 
@@ -38,8 +38,9 @@ export const middleware = async (request: NextRequest) => {
 
     const userRole = decoded.role;
 
+    // Allow tutors to access /tutor/lesson-offer
     if (userRole === "tutor" && pathname === "/tutor") {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/tutor/lesson-offer", request.url));
     }
 
     const allowedRoutes = roleBasedPrivateRoutes[userRole as Role];
