@@ -9,7 +9,7 @@ import {
   subjectColorMap,
   subjectTagBaseClass,
   textInfoClass,
-} from "@/booking/subjectColorMap";
+} from "@/lib/subjectColorMap";
 
 type AllBookingsProps = {
   role: string;

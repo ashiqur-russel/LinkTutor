@@ -27,7 +27,7 @@ import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { registerTutor } from "@/services/AuthService";
 import { TutorFormData } from "@/types";
-import { DAYS_OF_WEEK } from "@/const/availibity";
+import { DAYS_OF_WEEK } from "@/constants/availibity";
 
 const SUBJECT_OPTIONS = [
   "Mathematics",

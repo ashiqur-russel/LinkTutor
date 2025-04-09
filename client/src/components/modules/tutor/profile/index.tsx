@@ -4,7 +4,7 @@ import GeneralInfoCard from "./cards/GeneralInfoCard";
 import AddressCard from "./cards/AddressCard";
 import AvailabilityCard from "./cards/AvailabilityCard";
 import SubjectsCard from "./cards/SubjectsCard";
-import { HOURS_OF_DAY } from "@/const/availibity";
+import { HOURS_OF_DAY } from "@/constants/availibity";
 
 interface TutorData {
   name: string;

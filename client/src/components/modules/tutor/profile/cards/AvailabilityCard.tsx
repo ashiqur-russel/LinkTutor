@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trash2, PlusCircle, Pencil } from "lucide-react";
-import { DAYS_OF_WEEK, HOURS_OF_DAY } from "@/const/availibity";
+import { DAYS_OF_WEEK, HOURS_OF_DAY } from "@/constants/availibity";
 
 const availabilitySlotSchema = z.object({
   day: z.enum(DAYS_OF_WEEK),
