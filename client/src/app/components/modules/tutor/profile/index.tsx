@@ -4,8 +4,40 @@ import GeneralInfoCard from "./cards/GeneralInfoCard";
 import AddressCard from "./cards/AddressCard";
 import AvailabilityCard from "./cards/AvailabilityCard";
 import SubjectsCard from "./cards/SubjectsCard";
+import { HOURS_OF_DAY } from "@/app/const/availibity";
 
-const mockTutor = {
+interface TutorData {
+  name: string;
+  email: string;
+  role: string;
+  phone: string;
+  isActive: boolean;
+  availability: {
+    day:
+      | "Monday"
+      | "Tuesday"
+      | "Wednesday"
+      | "Thursday"
+      | "Friday"
+      | "Saturday"
+      | "Sunday";
+    startTime: (typeof HOURS_OF_DAY)[number];
+    endTime: (typeof HOURS_OF_DAY)[number];
+  }[];
+  subjects: string[];
+  hourRate: number;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+
+  imageUrl: string;
+}
+
+const mockTutor: TutorData = {
   name: "Mohammad Ashiqur Rahman",
   email: "rahman.tuc@gmail.com",
   role: "tutor",
@@ -27,6 +59,7 @@ const mockTutor = {
     postalCode: "90402",
     country: "Germany",
   },
+  imageUrl: "/assets/tutor/tutor.avif",
 };
 
 const TutorProfile = () => {
@@ -38,7 +71,10 @@ const TutorProfile = () => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-1 space-y-6">
-            <AvatarCard isActive={mockTutor.isActive} />
+            <AvatarCard
+              isActive={mockTutor.isActive}
+              imageUrl={mockTutor?.imageUrl}
+            />
             <GeneralInfoCard
               name={mockTutor.name}
               email={mockTutor.email}
@@ -48,7 +84,7 @@ const TutorProfile = () => {
           </div>
           <div className="md:col-span-2 space-y-6">
             <AddressCard address={mockTutor.address} />
-            <AvailabilityCard availability={mockTutor.availability} />
+            <AvailabilityCard initialAvailability={mockTutor.availability} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <SubjectsCard subjects={mockTutor.subjects} />
