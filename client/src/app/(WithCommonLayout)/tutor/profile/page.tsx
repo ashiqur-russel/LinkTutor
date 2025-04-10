@@ -1,4 +1,4 @@
-import TutorProfile from "@/app/components/modules/tutor/profile";
+import TutorProfile from "@/components/modules/tutor/profile";
 import React from "react";
 
 const TutorProfilePage = () => {

@@ -1,4 +1,4 @@
-import RegisterTutor from "@/app/components/modules/Auth/Register/RegisterTutor";
+import RegisterTutor from "@/components/modules/Auth/Register/RegisterTutor";
 import React from "react";
 
 const TutorRegisterPage = () => {

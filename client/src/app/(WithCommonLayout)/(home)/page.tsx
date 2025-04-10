@@ -1,8 +1,8 @@
-import HeroSection from "@/app/components/modules/Hero";
-import HowItWorks from "@/app/components/modules/Hero/HowItWorks";
-import LessonsPage from "@/app/components/modules/Hero/LessonSection";
-import TutorsLists from "@/app/components/modules/Hero/TutorList";
-import TutorCTA from "@/app/components/modules/Hero/TutorPost";
+import HeroSection from "@/components/modules/Hero";
+import HowItWorks from "@/components/modules/Hero/HowItWorks";
+import LessonsPage from "@/components/modules/Hero/LessonSection";
+import TutorsLists from "@/components/modules/Hero/TutorList";
+import TutorCTA from "@/components/modules/Hero/TutorPost";
 import React from "react";
 
 const Home = () => {
