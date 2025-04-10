@@ -385,15 +385,14 @@ const getUserPaymentHistory = async (
         $project: {
           _id: 1,
           amount: 1,
-          currency: 1,
           status: 1,
           createdAt: 1,
-          updatedAt: 1,
           tutor: {
             name: "$tutor.name",
           },
           booking: {
             sessionDate: "$booking.sessionDate",
+            subject: "$booking.subject",
           },
         },
       }
@@ -447,16 +446,15 @@ const getUserPaymentHistory = async (
         $project: {
           _id: 1,
           amount: 1,
-          currency: 1,
           status: 1,
           createdAt: 1,
-          updatedAt: 1,
           student: {
             name: "$student.name",
             classLevel: "$student.classLevel",
           },
           booking: {
             sessionDate: "$booking.sessionDate",
+            subject: "$booking.subject",
           },
         },
       }
