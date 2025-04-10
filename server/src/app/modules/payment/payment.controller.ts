@@ -6,6 +6,8 @@ import AppError from "../../errors/appError";
 import { LessonRequest } from "../lessonRequest/lessonRequest.model";
 import sendResponse from "../../utils/sendResponse";
 import { stripe } from "../../utils/stripe";
+import catchAsync from "../../utils/catchAsync";
+import { PaymentServices } from "./payment.service";
 
 export const stripeWebhookHandler = async (
   req: Request,
@@ -215,6 +217,31 @@ export const stripeWebhookHandler = async (
     });
   }
 };
+
+export const getUserPaymentHistory = catchAsync(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const { result, meta } = await PaymentServices.getUserPaymentHistory(
+      userId,
+      req.query
+    );
+
+    sendResponse(res, {
+      statusCode: 201,
+      success: true,
+      message: "Payment history fetchedsuccessfully",
+      data: result,
+      meta: meta
+        ? {
+            ...meta,
+            totalPage: meta.totalPages,
+          }
+        : undefined,
+    });
+  }
+);
+
 export const PaymentControllers = {
   stripeWebhookHandler,
+  getUserPaymentHistory,
 };

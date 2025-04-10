@@ -4,6 +4,13 @@ import { StatusCodes } from "http-status-codes";
 import { LessonRequest } from "../lessonRequest/lessonRequest.model";
 import User from "../User/User.model";
 import { stripe } from "../../utils/stripe";
+import { Payment } from "./payment.model";
+import { UserRole } from "../User/User.interface";
+import QueryBuilder from "../../builder/QueryBilder";
+import mongoose from "mongoose";
+import AggregateQueryBuilder from "../../builder/AggregateQueryBuilder";
+import { IPayment } from "./payment.interface";
+import { TMeta } from "../../utils/sendResponse";
 
 export const createStripeCheckoutSession = async ({
   amount,
@@ -63,8 +70,6 @@ export const createStripeCheckoutSession = async ({
         capture_method: "manual",
       },
     });
-
-    console.log(session);
 
     return { sessionId: session.id, lessonRequestId };
   } catch (error) {
@@ -140,8 +145,145 @@ const cancelPaymentIntent = async (lessonRequestId: string) => {
   }
 };
 
+const getUserPaymentHistory = async (
+  userId: string,
+  query?: Record<string, unknown>
+) => {
+  let result: any[] = [];
+  let meta;
+  const user = await User.findById({ _id: userId });
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  const paymentModel = Payment as mongoose.Model<IPayment>;
+  const aggregateQueryBuilder = new AggregateQueryBuilder(
+    paymentModel,
+    query || {}
+  );
+
+  if (user.role === UserRole.STUDENT) {
+    aggregateQueryBuilder.filter().sort().paginate().fields();
+
+    aggregateQueryBuilder.pipeline.unshift({
+      $match: { studentId: new mongoose.Types.ObjectId(userId) },
+    });
+    aggregateQueryBuilder.pipeline.push(
+      {
+        $lookup: {
+          from: "users",
+          localField: "tutorId",
+          foreignField: "_id",
+          as: "tutor",
+        },
+      },
+      { $unwind: { path: "$tutor", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          from: "bookings",
+          localField: "bookingId",
+          foreignField: "_id",
+          as: "booking",
+        },
+      },
+      { $unwind: { path: "$booking", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          amount: 1,
+          currency: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          tutor: {
+            name: "$tutor.name",
+          },
+
+          booking: {
+            sessionDate: "$booking.sessionDate",
+          },
+        },
+      }
+    );
+
+    result = await aggregateQueryBuilder.build();
+    const total = await aggregateQueryBuilder.countTotal();
+    const page = Number(query?.page) || 1;
+    const limit = Number(query?.limit) || 10;
+
+    meta = {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  if (user.role === UserRole.TUTOR) {
+    aggregateQueryBuilder.filter().sort().paginate().fields();
+
+    aggregateQueryBuilder.pipeline.unshift({
+      $match: { tutorId: new mongoose.Types.ObjectId(userId) },
+    });
+    aggregateQueryBuilder.pipeline.push(
+      {
+        $lookup: {
+          from: "users",
+          localField: "studentId",
+          foreignField: "_id",
+          as: "student",
+        },
+      },
+      { $unwind: { path: "$student", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "bookings",
+          localField: "bookingId",
+          foreignField: "_id",
+          as: "booking",
+        },
+      },
+      { $unwind: { path: "$booking", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          amount: 1,
+          currency: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          student: {
+            name: "$student.name",
+            classLevel: "$student.classLevel",
+          },
+
+          booking: {
+            sessionDate: "$booking.sessionDate",
+          },
+        },
+      }
+    );
+
+    result = await aggregateQueryBuilder.build();
+    const total = await aggregateQueryBuilder.countTotal();
+    const page = Number(query?.page) || 1;
+    const limit = Number(query?.limit) || 10;
+
+    meta = {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  return { result, meta };
+};
+
 export const PaymentServices = {
   createStripeCheckoutSession,
   capturePayment,
   cancelPaymentIntent,
+  getUserPaymentHistory,
 };

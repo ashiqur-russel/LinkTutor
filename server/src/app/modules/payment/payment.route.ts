@@ -12,4 +12,10 @@ router.post(
   PaymentControllers.stripeWebhookHandler
 );
 
+router.get(
+  "/:userId",
+  auth(UserRole.STUDENT, UserRole.TUTOR, UserRole.ADMIN),
+  PaymentControllers.getUserPaymentHistory
+);
+
 export const PaymentRoutes = router;

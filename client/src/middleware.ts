@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 const authRoutes = ["/login", "/register"];
 
 const roleBasedPrivateRoutes = {
-  student: [/^\/student/, /^\/student\/dashboard/],
+  student: [/^\/student/, /^\/student\/dashboard/, /^\/tutor/],
   tutor: [
     /^\/tutor/,
     /^\/tutor\/profile/,
