@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import config from "../../config";
 import { StatusCodes } from "http-status-codes";
-import AppError from "../../errors/appError";
 import { LessonRequest } from "../lessonRequest/lessonRequest.model";
 import sendResponse from "../../utils/sendResponse";
 import { stripe } from "../../utils/stripe";
