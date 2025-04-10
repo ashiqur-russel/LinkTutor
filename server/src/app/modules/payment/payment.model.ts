@@ -7,6 +7,11 @@ const PaymentSchema: Schema<IPayment> = new Schema({
     ref: "User",
     required: true,
   },
+  tutorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   bookingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Booking",

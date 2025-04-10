@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Bot, SquareTerminal, Settings } from "lucide-react";
+import {
+  Bot,
+  SquareTerminal,
+  Settings,
+  CircleDollarSign,
+  MessageSquare,
+} from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -37,8 +43,8 @@ const sidebarDataByRole = {
     },
     {
       title: "My Earnings",
-      icon: Bot,
-      url: "/tutor/profile",
+      icon: CircleDollarSign,
+      url: "/tutor/dashboard/earning-history",
     },
     {
       title: "Settings",
@@ -56,7 +62,12 @@ const sidebarDataByRole = {
     {
       title: "My Request",
       url: "/student/lesson-request",
-      icon: Bot,
+      icon: MessageSquare,
+    },
+    {
+      title: "My Payment",
+      url: "/student/dashboard/payment-history",
+      icon: CircleDollarSign,
     },
   ],
 };

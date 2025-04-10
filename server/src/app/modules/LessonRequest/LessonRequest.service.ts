@@ -17,13 +17,14 @@ import User from "../User/User.model";
 import { format } from "date-fns";
 import { Booking } from "../booking/booking.model";
 import mongoose, { Types } from "mongoose";
-import { bookingServices } from "../booking/booking.service";
 import QueryBuilder from "../../builder/QueryBilder";
 import { PaymentServices } from "../payment/payment.service";
 import { Payment } from "../payment/payment.model";
 import { stripe } from "../../utils/stripe";
 import { IBooking } from "../booking/booking.interface";
 import { PaymentStatus } from "../booking/booking.constant";
+import { bookingServices } from "../booking/Booking.service";
+import { IPayment } from "../payment/payment.interface";
 
 /**
  * createLessonRequest:
@@ -272,8 +273,6 @@ export const acceptRequest1 = async (requestId: string) => {
       throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
     }
 
-    console.log("inside accept request get req:", request);
-
     if (request.isDeclined) {
       throw new AppError(
         StatusCodes.CONFLICT,
@@ -374,6 +373,7 @@ const acceptRequest = async (requestId: string) => {
           currency: capturedPayment.currency,
           status: "paid",
           studentId: request.studentId,
+          tutorId: request.tutorId,
         });
         await paymentData.save({ session });
 
@@ -429,6 +429,7 @@ const acceptRequest = async (requestId: string) => {
             currency: paymentIntent.currency,
             status: "paid",
             studentId: request.studentId,
+            tutorId: request.tutorId,
           });
           await paymentData.save({ session });
         }

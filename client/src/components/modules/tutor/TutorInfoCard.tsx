@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import PhotoTutor from "../../../../../public/assets/tutor/tutor.avif";
+import PhotoTutor from "../../../../public/assets/tutor/tutor.avif";
 import { ITutor } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
