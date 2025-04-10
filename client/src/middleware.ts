@@ -4,8 +4,13 @@ import { jwtDecode } from "jwt-decode";
 const authRoutes = ["/login", "/register"];
 
 const roleBasedPrivateRoutes = {
-  student: [/^\/student/, /^\/tutor/],
-  tutor: [/^\/tutor\/profile/, /^\/tutor\/lesson-offer/], // Include /lesson-offer here
+  student: [/^\/student/, /^\/student\/dashboard/],
+  tutor: [
+    /^\/tutor/,
+    /^\/tutor\/profile/,
+    /^\/tutor\/lesson-offer/,
+    /^\/tutor\/dashboard/,
+  ],
   admin: [/^\/admin/],
 };
 
@@ -15,6 +20,7 @@ export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken")?.value;
 
+  // ✅ Allow login/register without token
   if (!accessToken) {
     if (authRoutes.includes(pathname)) return NextResponse.next();
 
@@ -38,19 +44,28 @@ export const middleware = async (request: NextRequest) => {
 
     const userRole = decoded.role;
 
-    // Allow tutors to access /tutor/lesson-offer
+    // ✅ Handle invalid or missing roles
+    if (!userRole || !(userRole in roleBasedPrivateRoutes)) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // ✅ Special redirect for tutor base path
     if (userRole === "tutor" && pathname === "/tutor") {
       return NextResponse.redirect(new URL("/tutor/lesson-offer", request.url));
     }
 
     const allowedRoutes = roleBasedPrivateRoutes[userRole as Role];
+
+    // ✅ Allow only if the pathname matches allowed routes for the role
     if (allowedRoutes?.some((route) => pathname.match(route))) {
       return NextResponse.next();
     }
 
+    // 🚫 Not allowed → redirect to home
     return NextResponse.redirect(new URL("/", request.url));
   } catch (err) {
     console.error("Token decode error:", err);
+
     const response = NextResponse.redirect(
       new URL(`/login?redirectPath=${pathname}`, request.url)
     );
@@ -60,12 +75,15 @@ export const middleware = async (request: NextRequest) => {
   }
 };
 
+// ✅ Ensure all relevant routes are handled
 export const config = {
   matcher: [
+    "/student",
     "/student/:path*",
-    "/admin/:path*",
-    "/create-shop",
     "/tutor",
     "/tutor/:path*",
+    "/admin",
+    "/admin/:path*",
+    "/create-shop", // include if needed
   ],
 };
