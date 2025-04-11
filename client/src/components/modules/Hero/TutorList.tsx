@@ -82,7 +82,7 @@ export default async function TutorsPage() {
         <div className="text-center mt-8">
           <Link href={"/tutor"}>
             {" "}
-            <Button variant="outline" className="bg-gray-200 cursor-pointer">
+            <Button className="rounded-full px-6 py-2 text-lg cusror-pointe">
               See all tutors
             </Button>
           </Link>
