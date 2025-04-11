@@ -47,18 +47,19 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex md:space-x-6 md:justify-center md:w-full lg:ml-10">
-          <Link href="#" className="text-gray-800 hover:text-teal-600">
+          <Link href="/" className="text-gray-800 hover:text-teal-600">
+            HOME
+          </Link>
+          <Link href="/about-us" className="text-gray-800 hover:text-teal-600">
             ABOUT US
           </Link>
           <Link href="#" className="text-gray-800 hover:text-teal-600">
             CONTACT
           </Link>
-          <Link href="#" className="text-gray-800 hover:text-teal-600">
+          <Link href="/faq" className="text-gray-800 hover:text-teal-600">
             FAQ
           </Link>
-          <Link href="#" className="text-gray-800 hover:text-teal-600">
-            NEWS
-          </Link>
+
           {user?.role === "student" && (
             <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
               TUTORS
@@ -167,18 +168,22 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-md p-4 space-y-3">
-          <Link href="#" className="block text-gray-800 hover:text-teal-600">
+          <Link href="/" className="block text-gray-800 hover:text-teal-600">
+            HOME
+          </Link>
+          <Link
+            href="/about-us"
+            className="block text-gray-800 hover:text-teal-600"
+          >
             About Us
           </Link>
-          <Link href="#" className="block text-gray-800 hover:text-teal-600">
+          <Link href="/faq" className="block text-gray-800 hover:text-teal-600">
             FAQ
           </Link>
           <Link href="#" className="block text-gray-800 hover:text-teal-600">
             Contact
           </Link>
-          <Link href="#" className="block text-gray-800 hover:text-teal-600">
-            NEWS
-          </Link>
+
           <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
             TUTORS
           </Link>

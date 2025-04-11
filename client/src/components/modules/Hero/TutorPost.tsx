@@ -4,6 +4,7 @@ import tutorPostAdImg from "../../../../public/teacher-post-ad.svg";
 import { Button } from "@/components/ui/button";
 
 import { GraduationCap, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function TutorCTA() {
   return (
@@ -27,7 +28,7 @@ export default function TutorCTA() {
               </p>
 
               <Button variant="default" className="mt-4">
-                Create Your Ad
+                <Link href={"/register/tutor"}> Create Your Profile</Link>
               </Button>
             </div>
           </div>
