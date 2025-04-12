@@ -65,6 +65,7 @@ const PaymentHistory = ({ pamymentHistory, role }: PaymentHistoryProps) => {
   return (
     <div className="container mx-auto h-screen">
       <h1 className="text-3xl pb-7 font-sans">My Payment History</h1>
+      <div className="flex"></div>
       {pamymentHistory?.length > 0 ? (
         <LinkTutorTable columns={columns} data={pamymentHistory} />
       ) : (

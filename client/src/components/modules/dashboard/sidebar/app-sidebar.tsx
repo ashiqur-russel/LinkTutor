@@ -2,11 +2,10 @@
 
 import * as React from "react";
 import {
-  Bot,
   SquareTerminal,
-  Settings,
   CircleDollarSign,
   MessageSquare,
+  StarIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -32,25 +31,9 @@ const sidebarDataByRole = {
       icon: SquareTerminal,
     },
     {
-      title: "Class Room",
-      icon: Bot,
-      url: "/tutor/dashboard",
-      items: [
-        { title: "Manage Bookings", url: "/tutor/dashboard/bookings" },
-        { title: "Manage Payment", url: "/tutor/dashboard/payments" },
-        { title: "Manage Students", url: "/tutor/dashboard/students" },
-      ],
-    },
-    {
-      title: "My Earnings",
+      title: "Earnings",
       icon: CircleDollarSign,
       url: "/tutor/dashboard/earning-history",
-    },
-    {
-      title: "Settings",
-      icon: Settings,
-      url: "/settings",
-      items: [{ title: "Profile", url: "/tutor/profile" }],
     },
   ],
   student: [
@@ -59,10 +42,16 @@ const sidebarDataByRole = {
       url: "/student/dashboard",
       icon: SquareTerminal,
     },
+
     {
-      title: "My Request",
+      title: "Request History",
       url: "/student/lesson-request",
       icon: MessageSquare,
+    },
+    {
+      title: "Reviews",
+      url: "",
+      icon: StarIcon,
     },
     {
       title: "My Payment",
@@ -86,7 +75,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="flex items-center justify-center font-semibold text-lg">
-                  MyApp
+                  Tutor Link
                 </div>
               </Link>
             </SidebarMenuButton>
