@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserRole } from "../User/User.interface";
 import auth from "../../middleware/auth";
-import { lessonRequestControllers } from "./LessonRequest.controller";
+import { lessonRequestControllers } from "./lessonRequest.controller";
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { bookingServices } from "./Booking.service";
+import { bookingServices } from "./booking.service";
 
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
   const result = await bookingServices.getAllBookings(req.query);
