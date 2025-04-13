@@ -5,6 +5,7 @@ import Review from "./review.model";
 import { Booking } from "../booking/booking.model";
 import Tutor from "../Tutor/Tutor.model";
 import mongoose from "mongoose";
+import { UserRole } from "../User/User.interface";
 
 const leaveReview = async (
   payload: { rating: number; comment: string },
@@ -31,7 +32,6 @@ const leaveReview = async (
     }
 
     const existingReview = await Review.findOne({
-      bookingId: bookingId,
       studentId: studentId,
       tutorId: booking.tutorId,
     }).session(session);
@@ -124,7 +124,69 @@ const getReview = async (tutorId: string) => {
   }
 };
 
+const getReviewsByStudentId = async (studentId: string) => {
+  try {
+    const reviews = await Review.find({
+      studentId: studentId,
+    }).populate("tutorId", "name  -_id");
+
+    return reviews;
+  } catch (error: any) {
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+const updateReviewByStudent = async (
+  studentId: string,
+  reviewId: string,
+  payload: { rating?: number; comment?: string }
+) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { rating, comment } = payload;
+
+    if (!rating && !comment) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        "At least one of rating or comment must be provided."
+      );
+    }
+
+    const review = await Review.findOne({
+      _id: reviewId,
+      studentId,
+    }).session(session);
+
+    if (!review) {
+      throw new AppError(
+        StatusCodes.NOT_FOUND,
+        "Review not found or unauthorized."
+      );
+    }
+
+    if (rating !== undefined) review.rating = rating;
+    if (comment !== undefined) review.comment = comment;
+
+    await review.save({ session });
+
+    await updateTutorRating(review.tutorId.toString(), session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return review;
+  } catch (error: any) {
+    await session.abortTransaction();
+    session.endSession();
+    throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
 export const ReviewService = {
   leaveReview,
   getReview,
+  getReviewsByStudentId,
+  updateReviewByStudent,
 };

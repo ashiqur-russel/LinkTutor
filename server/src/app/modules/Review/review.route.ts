@@ -11,5 +11,15 @@ router.post(
   ReviewControllers.leaveReview
 );
 router.get("/:tutorId", auth(UserRole.TUTOR), ReviewControllers.getReview);
+router.get(
+  "/student/reviews",
+  auth(UserRole.STUDENT),
+  ReviewControllers.getReviewsByStudent
+);
+router.put(
+  "/update/:reviewId",
+  auth(UserRole.STUDENT),
+  ReviewControllers.updateReview
+);
 
 export const ReviewRoutes = router;

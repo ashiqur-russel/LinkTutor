@@ -7,8 +7,6 @@ const leaveReview = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user;
   const { bookingId } = req.params;
 
-  console.log("first", userId, bookingId, req.body);
-
   const result = await ReviewService.leaveReview(req.body, bookingId, userId);
 
   sendResponse(res, {
@@ -32,7 +30,39 @@ const getReview = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getReviewsByStudent = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user;
+  const result = await ReviewService.getReviewsByStudentId(userId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Reviews fetched successfully",
+    data: result,
+  });
+});
+
+const updateReview = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user;
+  const { reviewId } = req.params;
+
+  const result = await ReviewService.updateReviewByStudent(
+    userId,
+    reviewId,
+    req.body
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Review updated successfully",
+    data: result,
+  });
+});
+
 export const ReviewControllers = {
   leaveReview,
   getReview,
+  getReviewsByStudent,
+  updateReview,
 };
