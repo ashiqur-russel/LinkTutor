@@ -59,6 +59,9 @@ export default function Navbar() {
           <Link href="/faq" className="text-gray-800 hover:text-teal-600">
             FAQ
           </Link>
+          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
+            BLOG
+          </Link>
 
           {user?.role === "student" && (
             <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
@@ -167,7 +170,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-md p-4 space-y-3">
+        <div className="md:hidden bg-white shadow-md p-4 space-y-3 text-center">
           <Link href="/" className="block text-gray-800 hover:text-teal-600">
             HOME
           </Link>
@@ -184,14 +187,23 @@ export default function Navbar() {
             Contact
           </Link>
 
-          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
+          <Link
+            href="/tutor"
+            className="block text-gray-800 hover:text-teal-600"
+          >
             TUTORS
+          </Link>
+          <Link
+            href="/tutor"
+            className="block text-gray-800 hover:text-teal-600"
+          >
+            BLOG
           </Link>
 
           {user?.role === "student" && (
             <Link
               href="/student/lesson-request"
-              className="text-gray-800 hover:text-teal-600"
+              className="block text-gray-800 hover:text-teal-600"
             >
               MY REQUEST
             </Link>
