@@ -44,7 +44,6 @@ export default function Navbar() {
   const userMenuItems = [
     { label: "Profile", href: `/${user?.role}/profile` },
     { label: "Dashboard", href: `/${user?.role}/dashboard` },
-    { label: "My Bookings", href: `/${user?.role}/bookings` }, // adjust if needed
   ];
 
   return (
