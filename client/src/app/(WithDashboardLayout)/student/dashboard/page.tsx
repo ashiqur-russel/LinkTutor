@@ -1,7 +1,8 @@
+import TutorDashboard from "@/components/modules/tutor/dashboard";
 import React from "react";
 
 const StudentDashboardPage = () => {
-  return <div>Student dahsbaord page</div>;
+  return <TutorDashboard />;
 };
 
 export default StudentDashboardPage;

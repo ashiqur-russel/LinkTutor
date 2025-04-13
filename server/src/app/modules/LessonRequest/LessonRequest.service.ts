@@ -23,8 +23,8 @@ import { Payment } from "../payment/payment.model";
 import { stripe } from "../../utils/stripe";
 import { IBooking } from "../booking/booking.interface";
 import { PaymentStatus } from "../booking/booking.constant";
-import { bookingServices } from "../booking/Booking.service";
 import { IPayment } from "../payment/payment.interface";
+import { bookingServices } from "../booking/booking.service";
 
 /**
  * createLessonRequest:

@@ -1,7 +1,8 @@
+import TutorDashboard from "@/components/modules/tutor/dashboard";
 import React from "react";
 
-const TutroDashboardPage = () => {
-  return <div>Tutor dahsbaord page</div>;
+const TutorDashboardPage = () => {
+  return <TutorDashboard />;
 };
 
-export default TutroDashboardPage;
+export default TutorDashboardPage;

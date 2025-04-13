@@ -2,7 +2,7 @@ import { Router } from "express";
 import validateRequest from "../../middleware/validateRequest";
 import { UserRole } from "../User/User.interface";
 import auth from "../../middleware/auth";
-import { bookingControllers } from "./Booking.controller";
+import { bookingControllers } from "./booking.controller";
 
 const router = Router();
 

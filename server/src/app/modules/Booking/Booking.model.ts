@@ -46,6 +46,8 @@ const BookingSchema: Schema<IBooking> = new Schema({
     enum: Object.values(BookingStatus),
     default: BookingStatus.ACTIVE,
   },
+  reviewGiven: { type: Boolean, default: false },
+
   paymentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Payment",
