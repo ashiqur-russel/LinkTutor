@@ -19,6 +19,7 @@ import { commonLinks, roleBasedLinks } from "@/constants/navLinks";
 import { protectedRoutes } from "@/constants";
 import { useUser } from "@/context/UserContext";
 import { logout } from "@/services/AuthService";
+import { isActivePath } from "@/lib/utils";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,15 +59,22 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex md:space-x-6 md:justify-center md:w-full lg:ml-10">
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-gray-800 hover:text-teal-600"
-            >
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ label, href }) => {
+            const active = isActivePath(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`relative px-2 py-1 ${
+                  active
+                    ? "text-teal-600 font-semibold after:content-[''] after:absolute after:w-full after:h-1 after:bg-teal-600 after:bottom-0 after:left-0"
+                    : "text-gray-800"
+                } hover:text-teal-600`}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Desktop Right Section */}
@@ -150,15 +158,22 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-md p-4 space-y-3 text-center">
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="block text-gray-800 hover:text-teal-600"
-            >
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ label, href }) => {
+            const active = isActivePath(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`relative px-2 py-1 ${
+                  active
+                    ? "text-teal-600 font-semibold after:content-[''] after:absolute after:w-full after:h-1 after:bg-teal-600 after:bottom-0 after:left-0"
+                    : "text-gray-800"
+                } hover:text-teal-600`}
+              >
+                {label}
+              </Link>
+            );
+          })}
 
           {user && (
             <div className="mt-3 space-y-2">
