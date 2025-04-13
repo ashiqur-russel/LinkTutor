@@ -28,6 +28,7 @@ export interface IBooking extends Document {
   sessionEnd?: Date;
   isCancelled?: boolean;
   canceledBy?: CanceledBy;
+  reviewGiven?: boolean;
   cancelReason?: string | null;
   cancellationTime?: Date;
   bookingStatus?: BookingStatus;
