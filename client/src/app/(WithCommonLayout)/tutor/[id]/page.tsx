@@ -7,9 +7,10 @@ import { notFound } from "next/navigation";
 export default async function TutorDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const tutor = getMockTutorById(params.id);
+  const { id } = await params;
+  const tutor = getMockTutorById(id);
   if (!tutor) return notFound();
 
   return (

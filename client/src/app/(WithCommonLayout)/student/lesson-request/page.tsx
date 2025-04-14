@@ -8,7 +8,7 @@ import { fetchMyFutureLessonRequests } from "@/services/LessonRequestService";
 const LessonRequestPage = async ({
   searchParams,
 }: {
-  searchParams: { page?: string; pageName?: string };
+  searchParams: Promise<{ page?: string; pageName?: string }>;
 }) => {
   const user = await getCurrentUser();
 

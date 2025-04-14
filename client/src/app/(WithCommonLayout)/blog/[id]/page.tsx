@@ -53,17 +53,16 @@ Here, we explain what you should include, how to start and end a personal statem
   },
 ];
 
-export async function generateStaticParams() {
-  return mockBlogPosts.map((post) => ({ id: post.id }));
-}
+
 
 export default async function BlogDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const postId = await params.id;
-  const post = mockBlogPosts.find((p) => p.id === postId);
+  const {id} = await params;
+  console.log(id)
+  const post = await mockBlogPosts.find((p) => p.id === id);
 
   if (!post) return notFound();
 
