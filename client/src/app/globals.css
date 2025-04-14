@@ -144,6 +144,9 @@
   .bg-link-green{
     background-color: var(--color-link-green);
   }
+  .color-primary{
+    color:#9a7f29
+  }
 
   /* Buttons */
   .btn-primary {

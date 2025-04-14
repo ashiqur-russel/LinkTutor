@@ -9,11 +9,11 @@ import { fetchMyFutureLessonRequests } from "@/services/LessonRequestService";
 const LessonOfferPage = async ({
   searchParams,
 }: {
-  searchParams: { page?: string; pageName?: string };
+  searchParams: Promise<{ page?: string; pageName?: string }>;
 }) => {
   const user = await getCurrentUser();
 
-  const { page = "1", pageName } = searchParams;
+  const { page = "1", pageName } =await  searchParams;
 
   const currentPage = Number(page);
 
