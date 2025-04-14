@@ -4,7 +4,8 @@
   "description": "Edutech",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node ./dist/server.js",
+    "prod": "node ./dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "create-module": "npx ts-node src/scripts/createModule.ts",

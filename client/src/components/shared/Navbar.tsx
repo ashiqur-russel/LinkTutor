@@ -15,9 +15,11 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
+import { commonLinks, roleBasedLinks } from "@/constants/navLinks";
 import { protectedRoutes } from "@/constants";
 import { useUser } from "@/context/UserContext";
 import { logout } from "@/services/AuthService";
+import { isActivePath } from "@/lib/utils";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,66 +31,57 @@ export default function Navbar() {
     logout();
     setIsLoading(true);
 
-    // If the current path is protected, redirect user to home
     if (protectedRoutes.some((route) => pathname.match(route))) {
       router.push("/");
     }
   };
 
+  const navLinks = [
+    ...commonLinks,
+    ...(user?.role ? roleBasedLinks[user.role] ?? [] : []),
+  ];
+
+  const userMenuItems = [
+    { label: "Profile", href: `/${user?.role}/profile` },
+    { label: "Dashboard", href: `/${user?.role}/dashboard` },
+  ];
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between md:px-6 lg:px-8">
+      <div className="flex px-8 py-6 justify-between lg:justify-evenly">
         {/* Logo */}
         <Link href="/">
-          <span className="text-primary text-2xl font-bold cursor-pointer">
+          <span className="text-primary text-xl font-bold cursor-pointer">
             LinkTutor
           </span>
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex md:space-x-6 md:justify-center md:w-full lg:ml-10">
-          <Link href="/" className="text-gray-800 hover:text-teal-600">
-            HOME
-          </Link>
-          <Link href="/about-us" className="text-gray-800 hover:text-teal-600">
-            ABOUT US
-          </Link>
-          <Link href="#" className="text-gray-800 hover:text-teal-600">
-            CONTACT
-          </Link>
-          <Link href="/faq" className="text-gray-800 hover:text-teal-600">
-            FAQ
-          </Link>
-
-          {user?.role === "student" && (
-            <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
-              TUTORS
-            </Link>
-          )}
-          {user?.role === "student" && (
-            <Link
-              href="/student/lesson-request"
-              className="text-gray-800 hover:text-teal-600"
-            >
-              MY REQUEST
-            </Link>
-          )}
-          {user?.role === "tutor" && (
-            <Link
-              href="/tutor/lesson-offer"
-              className="text-gray-800 hover:text-teal-600"
-            >
-              MY OFFER
-            </Link>
-          )}
+          {navLinks.map(({ label, href }) => {
+            const active = isActivePath(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`relative px-2 py-1 ${
+                  active
+                    ? "text-teal-600 font-semibold after:content-[''] after:absolute after:w-full after:h-1 after:bg-teal-600 after:bottom-0 after:left-0"
+                    : "text-gray-800"
+                } hover:text-teal-600`}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Desktop: Right side (avatar or login) */}
-        <div className="hidden md:flex md:items-center md:ml-auto ">
+        {/* Desktop Right Section */}
+        <div className="hidden md:flex md:items-center md:ml-auto">
           {!user ? (
-            <button className="btn-gold-outline">
-              <Link href="/login">Login</Link>
-            </button>
+            <Link href="/login" className="btn-gold-outline">
+              Login
+            </Link>
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -97,16 +90,14 @@ export default function Navbar() {
                   <AvatarFallback>User</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className=" bg-secondary mt-2">
+              <DropdownMenuContent className="bg-secondary mt-2">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href={`${user?.role}/profile`}>Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={`/${user?.role}/dashboard`}>Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>My Bookings</DropdownMenuItem>
+                {userMenuItems.map(({ label, href }) => (
+                  <DropdownMenuItem key={href}>
+                    <Link href={href}>{label}</Link>
+                  </DropdownMenuItem>
+                ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="btn-primary text-white cursor-pointer"
@@ -120,7 +111,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile: Right side (avatar or login) + Burger Toggle */}
+        {/* Mobile Right Section */}
         <div className="flex items-center space-x-4 md:hidden">
           {!user ? (
             <Link href="/login" className="btn-gold-outline px-3 py-1">
@@ -137,13 +128,11 @@ export default function Navbar() {
               <DropdownMenuContent className="bg-secondary mt-2">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/profile">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={`/${user?.role}/dashboard`}>Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>My Bookings</DropdownMenuItem>
+                {userMenuItems.map(({ label, href }) => (
+                  <DropdownMenuItem key={href}>
+                    <Link href={href}>{label}</Link>
+                  </DropdownMenuItem>
+                ))}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="btn-primary text-white cursor-pointer"
@@ -167,56 +156,41 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-md p-4 space-y-3">
-          <Link href="/" className="block text-gray-800 hover:text-teal-600">
-            HOME
-          </Link>
-          <Link
-            href="/about-us"
-            className="block text-gray-800 hover:text-teal-600"
-          >
-            About Us
-          </Link>
-          <Link href="/faq" className="block text-gray-800 hover:text-teal-600">
-            FAQ
-          </Link>
-          <Link href="#" className="block text-gray-800 hover:text-teal-600">
-            Contact
-          </Link>
-
-          <Link href="/tutor" className="text-gray-800 hover:text-teal-600">
-            TUTORS
-          </Link>
-
-          {user?.role === "student" && (
-            <Link
-              href="/student/lesson-request"
-              className="text-gray-800 hover:text-teal-600"
-            >
-              MY REQUEST
-            </Link>
-          )}
-
-          {user?.role === "tutor" && (
-            <Link href="#" className="text-gray-800 hover:text-teal-600">
-              MY OFFER
-            </Link>
-          )}
+        <div className="md:hidden bg-white shadow-md p-4 space-y-3 text-center">
+          {navLinks.map(({ label, href }) => {
+            const active = isActivePath(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`relative px-2 py-1 ${
+                  active
+                    ? "text-teal-600 font-semibold after:content-[''] after:absolute after:w-full after:h-1 after:bg-teal-600 after:bottom-0 after:left-0"
+                    : "text-gray-800"
+                } hover:text-teal-600`}
+              >
+                {label}
+              </Link>
+            );
+          })}
 
           {user && (
             <div className="mt-3 space-y-2">
-              <Link
-                href={`/${user?.role}/dashboard`}
-                className="block text-gray-800 hover:text-teal-600"
-              >
-                Dashboard
-              </Link>
+              {userMenuItems.map(({ label, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="block text-gray-800 hover:text-teal-600"
+                >
+                  {label}
+                </Link>
+              ))}
               <button
                 onClick={handleLogOut}
-                className="text-left bg-secondary text-white px-4 py-1 rounded-md"
+                className="text-left bg-secondary text-white px-4 py-1 rounded-md w-full"
               >
                 <span className="inline-flex items-center">
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-4 w-4" /> Log Out
                 </span>
               </button>
             </div>

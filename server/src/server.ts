@@ -1,56 +1,68 @@
-import { Server } from "http";
+import http from "http";
 import mongoose from "mongoose";
+import process from "process";
 import app from "./app";
 import config from "./app/config";
 
-let server: Server | null = null;
+/** We'll store our server and io references so we can export them. */
+let server: http.Server;
 
-// Database connection
-async function connectToDatabase() {
+/**
+ * Connect to MongoDB
+ */
+async function connectToDatabase(): Promise<void> {
   try {
     await mongoose.connect(config.db_url as string);
-    console.log("🛢 Database connected successfully");
-  } catch (err) {
-    console.error("Failed to connect to database:", err);
+    console.log("🛢️  Database connected successfully");
+  } catch (error) {
+    console.error("Failed to connect to database:", error);
     process.exit(1);
   }
 }
 
-// Graceful shutdown
-function gracefulShutdown(signal: string) {
+/**
+ * Perform graceful shutdown of the HTTP server
+ */
+function gracefulShutdown(signal: string): void {
   console.log(`Received ${signal}. Closing server...`);
+
   if (server) {
     server.close(() => {
       console.log("Server closed gracefully");
+      // Exit cleanly
       process.exit(0);
     });
   } else {
+    // If the server is somehow not set, just exit
     process.exit(0);
   }
 }
 
-// Application bootstrap
-async function bootstrap() {
+/**
+ * Main bootstrap function
+ */
+async function bootstrap(): Promise<void> {
   try {
     await connectToDatabase();
-    //await seed();
 
-    server = app.listen(config.port, () => {
+    server = http.createServer(app);
+
+    // 5. Start the server listening
+    server.listen(config.port, () => {
       console.log(`🚀 Application is running on port ${config.port}`);
     });
 
-    // Listen for termination signals
+    // 6. Handle process signals for graceful shutdown
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
     process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
-    // Error handling
+    // 7. Handle uncaught exceptions and unhandled rejections
     process.on("uncaughtException", (error) => {
       console.error("Uncaught Exception:", error);
       gracefulShutdown("uncaughtException");
     });
-
-    process.on("unhandledRejection", (error) => {
-      console.error("Unhandled Rejection:", error);
+    process.on("unhandledRejection", (reason) => {
+      console.error("Unhandled Rejection:", reason);
       gracefulShutdown("unhandledRejection");
     });
   } catch (error) {
