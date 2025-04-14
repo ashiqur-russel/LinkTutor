@@ -223,13 +223,15 @@ Description:
 
 - Returns all bookings for the current user (student or tutor).
 
-# Get My Upcoming Bookings (TBC)
+# Get My Bookings (TBC)
 
 GET /bookings/my-upcoming
 
 Description:
 
 - Returns only future bookings (where `sessionStart >= now`) for the current user.
+
+# Get Payment Data (Student & Tutor)
 
 ## Getting Started
 
@@ -260,7 +262,7 @@ Description:
 
    ```bash
    cd server
-   npm install
+   npm install 
    ```
 
 3. **Run the application:**
