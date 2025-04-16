@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
@@ -58,17 +60,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: ({ className, ...props }) => (
-          <ChevronLeft
-            className={cn("size-4", className)}
-            {...(props as React.SVGProps<SVGSVGElement>)}
-          />
+        IconLeft: ({ className, ...props }) => (
+          <ChevronLeft className={cn("size-4", className)} {...props} />
         ),
-        NextMonthButton: ({ className, ...props }) => (
-          <ChevronRight
-            className={cn("size-4", className)}
-            {...(props as React.SVGProps<SVGSVGElement>)}
-          />
+        IconRight: ({ className, ...props }) => (
+          <ChevronRight className={cn("size-4", className)} {...props} />
         ),
       }}
       {...props}
