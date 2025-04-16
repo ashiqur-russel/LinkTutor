@@ -26,7 +26,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-input: var(--input);
-  --color-link-green: var(--color-accent) 
+  --color-link-green: var(--color-accent);
 
   /* Button Colors */
   --color-button-primary: var(--button-primary);
