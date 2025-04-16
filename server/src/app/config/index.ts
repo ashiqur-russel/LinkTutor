@@ -29,6 +29,7 @@ export default {
     frontend_url: process.env.FRONTEND_URL,
     stripe_webhook_id: process.env.SRIPE_WEB_HOOK_ID,
     stripe_webhook_secret_local: process.env.STRIPE_WEB_HOOK_SECRET_LOCAL,
+    stripe_webhook_secret_live: process.env.STRIPE_WEB_HOOK_SECRET_LIVE,
   },
   ssl: {
     store_name: process.env.STORE_NAME,

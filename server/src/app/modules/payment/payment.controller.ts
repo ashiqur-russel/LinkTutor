@@ -25,7 +25,7 @@ export const stripeWebhookHandler = async (
     }
 
     let event: Stripe.Event;
-    const webhookSecret = config.stripe.stripe_webhook_secret_local as string;
+    const webhookSecret = config.stripe.stripe_webhook_secret_live as string;
 
     try {
       const body = req.body as Buffer;
