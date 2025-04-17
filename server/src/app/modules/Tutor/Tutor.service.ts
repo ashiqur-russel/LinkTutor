@@ -1,5 +1,7 @@
 import QueryBuilder from "../../builder/QueryBilder";
+import User from "../User/User.model";
 import { TutorSearchableFields } from "./Tutor.constant";
+import { ITutor } from "./Tutor.interface";
 import Tutor from "./Tutor.model";
 
 const getAllTutors = async (query: Record<string, unknown>) => {
@@ -74,4 +76,9 @@ const getAllTutors = async (query: Record<string, unknown>) => {
   };
 };
 
-export const TutorServices = { getAllTutors };
+const getTutorInfo =async (tutorId:string)=>{
+  const tutor = await User.findById({_id:tutorId}).select({"-_id":1,name:1, email:1, aboutMe:1,hourRate:1, subjects:1, languages:1,averageRating:1}) as ITutor
+  return tutor
+}
+ 
+export const TutorServices = { getAllTutors,getTutorInfo };

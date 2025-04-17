@@ -3,7 +3,6 @@ import { ITutor } from "./Tutor.interface";
 import { UserRole } from "../User/User.interface";
 import User from "../User/User.model";
 import { DAYS_OF_WEEK } from "../Tutor/Tutor.constant";
-import { number } from "zod";
 
 const TutorSchema: Schema<ITutor> = new Schema({
   availability: [
@@ -13,8 +12,10 @@ const TutorSchema: Schema<ITutor> = new Schema({
       endTime: { type: String, required: true },
     },
   ],
+  aboutMe: [{ type: String, required: false }],
   averageRating: { type: Number },
   subjects: [{ type: String, required: true }],
+  language: [{ type: String, required: false }],
   hourRate: { type: Number, required: true },
   rating: { type: Number },
 });
