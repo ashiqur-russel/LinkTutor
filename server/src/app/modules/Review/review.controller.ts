@@ -19,6 +19,7 @@ const leaveReview = catchAsync(async (req: Request, res: Response) => {
 
 const getReview = catchAsync(async (req: Request, res: Response) => {
   const { tutorId } = req.params;
+  console.log(tutorId)
 
   const result = await ReviewService.getReview(tutorId);
 

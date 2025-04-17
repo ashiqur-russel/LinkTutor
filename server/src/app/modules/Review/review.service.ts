@@ -17,18 +17,12 @@ const leaveReview = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  console.log("tutorId", tutorId)
-  console.log("studentId", studentId)
-
-
   try {
     const booking = await Booking.findOne({
       studentId: studentId,
       tutorId: tutorId,
       bookingStatus: "active",
     }).session(session);
-
-    console.log(booking)
 
     if (!booking) {
       throw new AppError(
@@ -114,10 +108,10 @@ const updateTutorRating = async (
 
 const getReview = async (tutorId: string) => {
   try {
-    const reviews = await Review.find({ tutor: tutorId }).populate(
-      "student",
-      "name email"
-    );
+    const reviews = await Review.find({ tutorId: tutorId }).populate(
+      "studentId",
+      "name email -_id"
+    )
 
     const avgRating =
       reviews.reduce((acc, review) => acc + (review.rating ?? 0), 0) /
