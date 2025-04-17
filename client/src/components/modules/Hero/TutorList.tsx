@@ -24,7 +24,7 @@ export default async function TutorsPage() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {tutors?.data.map((tutor: ITutor) => (
+          {tutors?.data?.map((tutor: ITutor) => (
             <Card key={tutor.email} className="flex flex-col">
               <CardHeader className="flex items-center space-x-4">
                 {" "}
