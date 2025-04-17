@@ -6,7 +6,7 @@ import { UserRole } from "../User/User.interface";
 const router = express.Router();
 
 router.post(
-  "/:bookingId",
+  "/:tutorId",
   auth(UserRole.STUDENT),
   ReviewControllers.leaveReview
 );

@@ -9,7 +9,7 @@ import { UserRole } from "../User/User.interface";
 
 const leaveReview = async (
   payload: { rating: number; comment: string },
-  bookingId: string,
+  tutorId: string,
   studentId: string
 ) => {
   const { rating, comment } = payload;
@@ -17,17 +17,23 @@ const leaveReview = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
+  console.log("tutorId", tutorId)
+  console.log("studentId", studentId)
+
+
   try {
     const booking = await Booking.findOne({
-      _id: bookingId,
       studentId: studentId,
+      tutorId: tutorId,
       bookingStatus: "active",
     }).session(session);
+
+    console.log(booking)
 
     if (!booking) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
-        "You need to complete a session before leaving a review for this booking."
+        "You need to complete atleast one session with this tutor before leaving a review."
       );
     }
 
@@ -53,7 +59,6 @@ const leaveReview = async (
     const newReview = new Review({
       studentId: studentId,
       tutorId: booking.tutorId,
-      bookingId: bookingId,
       rating,
       comment,
     });
