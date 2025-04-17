@@ -13,5 +13,5 @@ export interface ITutor extends IUser {
   averageRating?: string;
   aboutMe?:string;
   hourRate: number;
-  language:string[]
+  languages:string[]
 }

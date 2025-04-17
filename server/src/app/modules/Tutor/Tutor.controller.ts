@@ -29,7 +29,22 @@ const getTutorInfo = catchAsync(async (req, res) => {
 });
 
 
+const getStudentTutorsList = catchAsync(async (req, res) => {
+console.log("getStudentTutorsList")
+  const {userId} = req.user;
+  const result = await TutorServices.getStudentTutorsList(userId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor list  for student fetched successfully",
+    data: result,
+  });
+});
+
+
 export const TutorController = {
   getAllTutors,
-  getTutorInfo
+  getTutorInfo,
+  getStudentTutorsList
 };

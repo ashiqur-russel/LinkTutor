@@ -15,7 +15,7 @@ const TutorSchema: Schema<ITutor> = new Schema({
   aboutMe: [{ type: String, required: false }],
   averageRating: { type: Number },
   subjects: [{ type: String, required: true }],
-  language: [{ type: String, required: false }],
+  languages: [{ type: String, required: false }],
   hourRate: { type: Number, required: true },
   rating: { type: Number },
 });
