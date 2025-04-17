@@ -111,11 +111,8 @@ const getReview = async (tutorId: string) => {
     const reviews = await Review.find({ tutorId })
     .select('studentId rating comment updatedAt -_id') 
     .populate('studentId', 'name -_id');
-    const avgRating =
-      reviews.reduce((acc, review) => acc + (review.rating ?? 0), 0) /
-      reviews.length;
-
-    return { reviews, avgRating };
+    
+    return { reviews };
   } catch (error: any) {
     throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
   }
