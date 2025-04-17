@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { TutorServices } from "./Tutor.service";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
@@ -16,6 +15,36 @@ const getAllTutors = catchAsync(async (req, res) => {
   });
 });
 
+
+const getTutorInfo = catchAsync(async (req, res) => {
+  const {tutorId} = req.params;
+  const result = await TutorServices.getTutorInfo(tutorId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor Info retieved successfully",
+    data: result,
+  });
+});
+
+
+const getStudentTutorsList = catchAsync(async (req, res) => {
+console.log("getStudentTutorsList")
+  const {userId} = req.user;
+  const result = await TutorServices.getStudentTutorsList(userId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Tutor list  for student fetched successfully",
+    data: result,
+  });
+});
+
+
 export const TutorController = {
   getAllTutors,
+  getTutorInfo,
+  getStudentTutorsList
 };

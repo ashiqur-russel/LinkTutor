@@ -5,9 +5,9 @@ import { ReviewService } from "./review.service";
 
 const leaveReview = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user;
-  const { bookingId } = req.params;
+  const { tutorId } = req.params;
 
-  const result = await ReviewService.leaveReview(req.body, bookingId, userId);
+  const result = await ReviewService.leaveReview(req.body, tutorId, userId);
 
   sendResponse(res, {
     statusCode: 201,
@@ -19,6 +19,7 @@ const leaveReview = catchAsync(async (req: Request, res: Response) => {
 
 const getReview = catchAsync(async (req: Request, res: Response) => {
   const { tutorId } = req.params;
+  console.log(tutorId)
 
   const result = await ReviewService.getReview(tutorId);
 

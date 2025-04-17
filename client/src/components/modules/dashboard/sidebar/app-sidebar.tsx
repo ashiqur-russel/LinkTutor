@@ -6,6 +6,7 @@ import {
   CircleDollarSign,
   MessageSquare,
   StarIcon,
+  UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -50,13 +51,18 @@ const sidebarDataByRole = {
     },
     {
       title: "Reviews",
-      url: "",
+      url: "/student/dashboard/reviews",
       icon: StarIcon,
     },
     {
       title: "My Payment",
       url: "/student/dashboard/payment-history",
       icon: CircleDollarSign,
+    },
+    {
+      title: "My Tutors",
+      url: "/student/dashboard/tutors",
+      icon: UsersIcon,
     },
   ],
 };

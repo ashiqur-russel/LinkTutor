@@ -7,6 +7,7 @@ import { ITutor } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import BookingModal from "../modal/BookingModal";
+import Link from "next/link";
 
 type TutorProps = {
   tutor: ITutor;
@@ -18,14 +19,15 @@ const TutorInfoCard = ({ tutor, studentId }: TutorProps) => {
 
   return (
     <div className="flex border rounded-lg p-4 shadow-md items-center justify-center flex-col md:flex-row  max-h-[250px]">
-      <div className="flex justify-center mb-4">
-        <Image
+      <div className="flex justify-center mb-4" >
+      <Link href={`tutor/${tutor._id}`}>
+      <Image
           src={PhotoTutor}
           alt={tutor.name}
           width={200}
           height={200}
           className="rounded-md object-cover"
-        />
+        /></Link>
       </div>
 
       <div className="text-center flex-1/2 md:mx-2 text-sm md:text-sm">

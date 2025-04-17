@@ -5,6 +5,11 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/formatDate";
+
+type TutorReviewsProps= {
+  reviews:any[]
+} 
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }).map((_, i) => (
@@ -18,9 +23,11 @@ const renderStars = (rating: number) => {
   ));
 };
 
-export default function TutorReviews({ reviews }: { reviews: any[] }) {
+export default function TutorReviews( {reviews} : TutorReviewsProps) {
   const [showAll, setShowAll] = useState(false);
   const visibleReviews = showAll ? reviews : reviews.slice(0, 2);
+  console.log(reviews)
+
 
   return (
     <div>
@@ -44,8 +51,8 @@ export default function TutorReviews({ reviews }: { reviews: any[] }) {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="font-semibold ">{review.author}</span>
-                <span className=" text-sm">{review.date}</span>
+                <span className="font-semibold ">{review?.studentId?.name}</span>
+                <span className=" text-sm">{formatDate(review.updatedAt)}</span>
               </div>
               <div className="flex items-center">
                 {renderStars(review.rating)}

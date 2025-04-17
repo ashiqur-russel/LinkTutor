@@ -9,7 +9,7 @@ import { UserRole } from "../User/User.interface";
 
 const leaveReview = async (
   payload: { rating: number; comment: string },
-  bookingId: string,
+  tutorId: string,
   studentId: string
 ) => {
   const { rating, comment } = payload;
@@ -19,15 +19,15 @@ const leaveReview = async (
 
   try {
     const booking = await Booking.findOne({
-      _id: bookingId,
       studentId: studentId,
+      tutorId: tutorId,
       bookingStatus: "active",
     }).session(session);
 
     if (!booking) {
       throw new AppError(
         StatusCodes.BAD_REQUEST,
-        "You need to complete a session before leaving a review for this booking."
+        "You need to complete atleast one session with this tutor before leaving a review."
       );
     }
 
@@ -53,7 +53,6 @@ const leaveReview = async (
     const newReview = new Review({
       studentId: studentId,
       tutorId: booking.tutorId,
-      bookingId: bookingId,
       rating,
       comment,
     });
@@ -109,16 +108,11 @@ const updateTutorRating = async (
 
 const getReview = async (tutorId: string) => {
   try {
-    const reviews = await Review.find({ tutor: tutorId }).populate(
-      "student",
-      "name email"
-    );
-
-    const avgRating =
-      reviews.reduce((acc, review) => acc + (review.rating ?? 0), 0) /
-      reviews.length;
-
-    return { reviews, avgRating };
+    const reviews = await Review.find({ tutorId })
+    .select('studentId rating comment updatedAt -_id') 
+    .populate('studentId', 'name -_id');
+    
+    return { reviews };
   } catch (error: any) {
     throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
   }

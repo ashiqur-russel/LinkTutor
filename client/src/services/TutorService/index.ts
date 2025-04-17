@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { getValidTokenWithCookie } from "@/actions/refreshToken";
+
 export const getAllTutors = async (
   filters?: Record<string, any>,
   page?: string,
@@ -62,5 +64,45 @@ export const getDisplayedTutor = async () => {
     return data;
   } catch (error: any) {
     return Error(error.message);
+  }
+};
+
+export const fetchTutorInfoById = async (tutorId: string)=>{
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/${tutorId}`
+    );
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
+  }
+
+}
+
+
+export const fetchTutorListForStudent= async (
+  page?: string,
+  limit?: string
+) => {
+  const token = await getValidTokenWithCookie();
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/tutor/tutors?page=${page}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching lesson requests:", error);
+    return { result: [], meta: {} };
   }
 };
