@@ -108,11 +108,9 @@ const updateTutorRating = async (
 
 const getReview = async (tutorId: string) => {
   try {
-    const reviews = await Review.find({ tutorId: tutorId }).populate(
-      "studentId",
-      "name email -_id"
-    )
-
+    const reviews = await Review.find({ tutorId })
+    .select('studentId rating comment updatedAt -_id') 
+    .populate('studentId', 'name -_id');
     const avgRating =
       reviews.reduce((acc, review) => acc + (review.rating ?? 0), 0) /
       reviews.length;

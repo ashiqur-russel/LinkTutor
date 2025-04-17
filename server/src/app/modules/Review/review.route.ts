@@ -10,7 +10,7 @@ router.post(
   auth(UserRole.STUDENT),
   ReviewControllers.leaveReview
 );
-router.get("/:tutorId", auth(UserRole.TUTOR), ReviewControllers.getReview);
+router.get("/:tutorId", ReviewControllers.getReview);
 router.get(
   "/student/reviews",
   auth(UserRole.STUDENT),
