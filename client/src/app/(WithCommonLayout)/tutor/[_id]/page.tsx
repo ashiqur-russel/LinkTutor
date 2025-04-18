@@ -8,9 +8,9 @@ import { notFound } from "next/navigation";
 export default async function TutorDetailsPage({
   params,
 }: {
-  params: { _id: string };
+  params: Promise<{ _id: string }>;
 }) {
-  const { _id } = params;
+  const { _id } = await params;
 
   const [tutorInfo, tutorReviews] = await Promise.all([
     fetchTutorInfoById(_id),
