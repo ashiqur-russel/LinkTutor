@@ -122,7 +122,7 @@ const getReviewsByStudentId = async (studentId: string) => {
   try {
     const reviews = await Review.find({
       studentId: studentId,
-    }).populate("tutorId", "name  -_id");
+    }).populate("tutorId", "name");
 
     return reviews;
   } catch (error: any) {
