@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/formatDate";
 
 type TutorReviewsProps= {
   reviews:any[]
+  averageRating: number
 } 
 
 const renderStars = (rating: number) => {
@@ -23,11 +24,24 @@ const renderStars = (rating: number) => {
   ));
 };
 
-export default function TutorReviews( {reviews} : TutorReviewsProps) {
+export default function TutorReviews( {reviews,averageRating} : TutorReviewsProps) {
   const [showAll, setShowAll] = useState(false);
   const visibleReviews = showAll ? reviews : reviews.slice(0, 2);
-  console.log(reviews)
-
+  console.log('reviews', reviews)
+  if (!reviews || reviews.length === 0) {   
+    return (
+      <div>
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold">
+            What my students say
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-400">No reviews yet.</p>
+        </CardContent>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -40,8 +54,8 @@ export default function TutorReviews( {reviews} : TutorReviewsProps) {
         <div className="mb-6">
           <h3 className="text-lg font-semibold ">{reviews.length} Reviews</h3>
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-yellow-400">5</span>
-            {renderStars(5)}
+            <span className="text-2xl font-bold text-yellow-400">{averageRating}</span>
+            {renderStars(averageRating)}
           </div>
         </div>
         {visibleReviews.map((review, idx) => (

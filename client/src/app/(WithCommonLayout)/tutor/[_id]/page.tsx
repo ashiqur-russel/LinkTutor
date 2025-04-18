@@ -21,13 +21,17 @@ export default async function TutorDetailsPage({
     return notFound();
   }
 
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           <div className="md:col-span-2 space-y-8">
             <TutorAbout tutor={tutorInfo.data} />
-            <TutorReviews reviews={tutorReviews.data.reviews} />
+            <TutorReviews 
+                  reviews={tutorReviews.data.reviews}   
+                  averageRating={tutorInfo.data.averageRating}
+                />
           </div>
           <div className="md:col-span-1">
             <div className="sticky top-20">
