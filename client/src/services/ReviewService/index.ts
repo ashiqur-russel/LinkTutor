@@ -52,7 +52,7 @@ export const fetchAllReviewByStudentId = async (
   }
 };
 
-export const addReviewForTutor = async( tutorId: string)=>{
+export const addReviewForTutor = async( tutorId: string,reviewData:{rating:number, comment:string})=>{
     const token = await getValidTokenWithCookie();
 
     try {
@@ -65,6 +65,7 @@ export const addReviewForTutor = async( tutorId: string)=>{
                 "Content-Type": "application/json",
                 Authorization: token,
               },
+                body: JSON.stringify(reviewData),
             }
           );
           const data = await res.json();

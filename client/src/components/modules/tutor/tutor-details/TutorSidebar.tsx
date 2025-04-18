@@ -7,6 +7,7 @@ import PhotoTutor from "../../../../../public/assets/tutor/tutor.avif";
 type TutorSidebarProps = {
   tutor: any,
   reviews: any,
+
 }
 
 export default function TutorSidebar({ tutor,reviews }: TutorSidebarProps) {
@@ -27,7 +28,7 @@ export default function TutorSidebar({ tutor,reviews }: TutorSidebarProps) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-400" />
-            <span className="text-lg font-semibold text-white">5</span>
+            <span className="text-lg font-semibold text-white">{tutor.averageRating}</span>
             <span className="text-gray-400 text-sm">
               ({reviews} reviews)
             </span>
