@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { Loader2 } from "lucide-react";
 
 interface TutorLinkModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface TutorLinkModalProps {
   submitLabel: string;
   cancelLabel: string;
   onSubmit: () => void;
+  isSubmitting?: boolean; 
 }
 
 const TutorLinkModal = ({
@@ -27,6 +29,7 @@ const TutorLinkModal = ({
   submitLabel,
   cancelLabel,
   onSubmit,
+  isSubmitting = false, 
 }: TutorLinkModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -47,7 +50,18 @@ const TutorLinkModal = ({
           <Button variant="outline" onClick={onClose}>
             {cancelLabel}
           </Button>
-          <Button onClick={onSubmit}>{submitLabel}</Button>
+          <Button onClick={onSubmit} disabled={isSubmitting}>
+  {isSubmitting ? (
+    <span className="flex items-center gap-2">
+      <Loader2 className="w-4 h-4 animate-spin" />
+      Booking...
+    </span>
+  ) : (
+    submitLabel
+  )}
+</Button>
+
+
         </DialogFooter>
       </DialogContent>
     </Dialog>
