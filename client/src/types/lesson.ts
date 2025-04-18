@@ -1,7 +1,13 @@
 export interface ILessonRequest {
   _id: string;
-  tutorId: string;
-  studentId: string;
+  tutorId: {
+    name: string;
+    _id: string;
+  };
+  studentId: {
+    name: string;
+    _id: string;
+  };
   subject: string;
   type: string;
   duration: string | number;

@@ -34,6 +34,8 @@ const BookingModal = ({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+ 
   const [selectedSubject, setSelectedSubject] = useState(
     (tutor?.subjects ?? [])[0] || ""
   );
@@ -110,63 +112,69 @@ const BookingModal = ({
     ? getAvailableTimes(selectedDate, selectedDuration)
     : [];
 
-  const handleSubmit = async () => {
-    const newErrors = {
-      date: !selectedDate,
-      time: !selectedTime,
-      subject: !selectedSubject,
-    };
-
-    setErrors(newErrors);
-
-    if (!newErrors.date && !newErrors.time && !newErrors.subject) {
-      if (!selectedDate || !selectedTime) return;
-
-      const startTime = new Date(selectedDate);
-      startTime.setHours(
-        parseInt(selectedTime.split(":")[0]),
-        parseInt(selectedTime.split(":")[1])
-      );
-      const endTime = new Date(startTime);
-      endTime.setHours(startTime.getHours() + selectedDuration);
-
-      const payload = {
-        tutorId: tutor._id,
-        studentId,
-        subject: selectedSubject,
-        sessionDate: selectedDate?.toISOString() || new Date().toISOString(),
-        sessionStart: startTime.toISOString(),
-        sessionEnd: endTime.toISOString(),
+    const handleSubmit = async () => {
+      setIsSubmitting(true);
+    
+      const newErrors = {
+        date: !selectedDate,
+        time: !selectedTime,
+        subject: !selectedSubject,
       };
-
-      try {
-        const response = await createLessonRequest(payload);
-        console.log("Backend response:", response);
-
-        if (response.sessionId) {
+    
+      setErrors(newErrors);
+    
+      if (!newErrors.date && !newErrors.time && !newErrors.subject) {
+        if (!selectedDate || !selectedTime) return;
+    
+        const startTime = new Date(selectedDate);
+        startTime.setHours(
+          parseInt(selectedTime.split(":")[0]),
+          parseInt(selectedTime.split(":")[1])
+        );
+        const endTime = new Date(startTime);
+        endTime.setHours(startTime.getHours() + selectedDuration);
+    
+        const payload = {
+          tutorId: tutor._id,
+          studentId,
+          subject: selectedSubject,
+          sessionDate: selectedDate?.toISOString(),
+          sessionStart: startTime.toISOString(),
+          sessionEnd: endTime.toISOString(),
+        };
+    
+        try {
+          const response = await createLessonRequest(payload);
+    
+          if (!response.success) {
+            toast.error(response.message || "Failed to book session.");
+            return;
+          }
+    
           const stripe = await stripePromise;
           if (stripe) {
             const result = await stripe.redirectToCheckout({
               sessionId: response.sessionId,
             });
-
+    
             if (result.error) {
               toast.error(result.error.message);
               console.log(result.error.message);
             }
+          } else {
+            toast.error("Stripe initialization failed.");
           }
-        } else {
-          toast.error("Failed to retrieve the client secret.");
+        } catch (error: any) {
+          toast.error(error.message || "Booking failed. Try again.");
+          console.log(error.message);
+        } finally {
+          setIsSubmitting(false); 
         }
-      } catch (error: any) {
-        toast.error(
-          error.message || "Failed to book lesson. Please try again."
-        );
-        console.log(error.message);
+      } else {
+        setIsSubmitting(false); 
       }
-    }
-  };
-
+    };
+    
   return (
     <TutorLinkModal
       isOpen={isOpen}
@@ -175,6 +183,7 @@ const BookingModal = ({
       submitLabel="Book"
       cancelLabel="Cancel"
       onSubmit={handleSubmit}
+      isSubmitting={isSubmitting}
       content={
         <div className="flex flex-col font-mono">
           <div className="grid grid-cols-1 md:grid-cols-2">
@@ -278,7 +287,7 @@ const BookingModal = ({
                 variant={selectedDuration === 1 ? "default" : "outline"}
                 onClick={() => {
                   setSelectedDuration(1);
-                  setSelectedTime(null); // Reset selected time when duration changes
+                  setSelectedTime(null); 
                 }}
                 className="w-24"
               >
@@ -288,7 +297,7 @@ const BookingModal = ({
                 variant={selectedDuration === 2 ? "default" : "outline"}
                 onClick={() => {
                   setSelectedDuration(2);
-                  setSelectedTime(null); // Reset selected time when duration changes
+                  setSelectedTime(null); 
                 }}
                 className="w-24"
               >
