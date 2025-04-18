@@ -121,6 +121,7 @@ const getStudentTutorsList = async (userId: string) => {
       $project: {
         _id: 0,
         tutor: {
+          id:"$tutorInfo._id",
           name: "$tutorInfo.name",
           email: "$tutorInfo.email",
           phone: "$tutorInfo.phone",

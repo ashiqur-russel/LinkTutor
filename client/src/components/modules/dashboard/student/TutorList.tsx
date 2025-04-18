@@ -1,14 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import LinkTutorTable from "@/components/ui/core/LinkTutorTable";
+import { MessageCirclePlus } from "lucide-react";
+import TutorReviewModal from "../../modal/shared/TutorReviewModal";
 
 interface TutorInfo {
   name: string;
   email: string;
   phone: string;
   hourRate: number;
+  id:string;
 }
 
 interface ITutorList {
@@ -20,7 +23,13 @@ type TutorListProps = {
 };
 
 const TutorList = ({ tutorList }: TutorListProps) => {
-
+    const [open, setOpen] = useState(false);
+    const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+    
+    const handleAddReview = (id: string) => {
+      setSelectedTutorId(id);
+      setOpen(true);
+    };
   const columns: ColumnDef<ITutorList>[] = [
     {
       accessorKey: "tutor.name",
@@ -42,6 +51,25 @@ const TutorList = ({ tutorList }: TutorListProps) => {
       header: "Rate",
       cell: ({ row }) => <span>{row.original.tutor.hourRate}</span>,
     },
+    {
+        accessorKey: "action",
+        header: "Action",
+        cell: ({ row }) => (
+          <div className="flex items-center space-x-3">
+        
+  
+            <button
+              className="text-gray-500 hover:text-green-500  cursor-pointer"
+              title="Edit"
+              onClick={() => handleAddReview(row.original.tutor.id)}
+            >
+              <MessageCirclePlus className="w-5 h-5" />
+            </button>
+  
+           
+          </div>
+        ),
+      },
   ];
 
   return (
@@ -53,7 +81,12 @@ const TutorList = ({ tutorList }: TutorListProps) => {
       ) : (
         <p>No tutor yet.</p>
       )}
-    </div>
+
+<TutorReviewModal
+  open={open}
+  setOpen={setOpen}
+  tutorId={selectedTutorId || ""}
+/>    </div>
   );
 };
 
