@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import LinkTutorTable from "@/components/ui/core/LinkTutorTable";
 import { MessageCirclePlus } from "lucide-react";
-import TutorReviewModal from "../../modal/shared/TutorReviewModal";
+import TutorReviewModal from "../../modal/review/TutorReviewModal";
 
 interface TutorInfo {
   name: string;
