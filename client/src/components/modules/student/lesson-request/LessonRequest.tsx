@@ -17,6 +17,7 @@ type LessonRequestProps = {
 const LessonRequest = ({ requests, meta }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  console.log(requests)
 
   const handleCancelRequest = async (requestId: string) => {
     if (
@@ -54,7 +55,7 @@ const LessonRequest = ({ requests, meta }: LessonRequestProps) => {
               {formatTime(new Date(request.sessionEnd))}
             </p>
             <p className="text-lg font-mono text-gray-500">
-              Tutor: {request.tutorId}
+              Tutor: {request.tutorId.name}
             </p>
           </div>
 

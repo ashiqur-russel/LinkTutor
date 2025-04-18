@@ -185,12 +185,17 @@ const getMyUpcomingLessonRequest = async (
     filter = { tutorId: userId, sessionDate: { $gte: currentDate } };
   }
 
-  const lessonQuery = new QueryBuilder(LessonRequest.find(filter), query)
+  const lessonQuery = new QueryBuilder(
+    LessonRequest.find(filter)
+      .populate("tutorId", "name _id")
+      .populate("studentId", "name _id"),
+    query
+  )
     .filter()
     .sort()
     .paginate()
     .fields();
-
+  
   const result = await lessonQuery.modelQuery;
   const meta = await lessonQuery.countTotal();
 

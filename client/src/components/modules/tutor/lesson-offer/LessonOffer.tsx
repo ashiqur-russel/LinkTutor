@@ -78,7 +78,7 @@ const LessonOffer = ({ requests, meta }: LessonOfferProps) => {
               {formatTime(new Date(request.sessionEnd))}
             </p>
             <p className="text-lg font-mono text-gray-500">
-              Tutor: {request.tutorId}
+              Student: {request.studentId.name}
             </p>
           </div>
 
