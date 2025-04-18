@@ -3,6 +3,7 @@ export type Review = {
     comment: string,
     rating: string
     tutorId:{
+        id:string,
         name:string
     },
     booking:string

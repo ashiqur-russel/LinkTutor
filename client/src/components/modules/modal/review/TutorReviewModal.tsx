@@ -36,32 +36,43 @@ type TutorReviewModalProps = {
   tutorId: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  review?: {
+    _id: string;
+    rating: number;
+    comment: string;
+  };
 };
 
-const TutorReviewModal = ({ tutorId, open, setOpen }: TutorReviewModalProps) => {
+const TutorReviewModal = ({ tutorId, open, setOpen ,review}: TutorReviewModalProps) => {
   const form = useForm<ReviewFormType>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
-      rating: 0,
-      comment: "",
+      rating: review?.rating ?? 0,
+      comment: review?.comment ?? "",
     },
   });
+  
 
   const { isSubmitting } = form.formState;
 
   const onSubmit = async (data: ReviewFormType) => {
-    console.log(data)
     try {
-        const reviewData = {
-            rating: Number(data.rating),
-            comment: data.comment,
-        };
-
-      const res = await addReviewForTutor(tutorId, reviewData);
-
-
+      const reviewData = {
+        rating: Number(data.rating),
+        comment: data.comment,
+      };
+  
+      let res;
+  
+      if (review) {
+       // res = await updateReviewForTutor(review._id, reviewData);
+       console.log(review._id, reviewData)
+      } else {
+        res = await addReviewForTutor(tutorId, reviewData);
+      }
+  
       if (res.success) {
-        toast.success("Review submitted successfully!");
+        toast.success(`Review ${review ? "updated" : "submitted"} successfully!`);
         form.reset();
         setOpen(false);
       } else {
@@ -72,12 +83,15 @@ const TutorReviewModal = ({ tutorId, open, setOpen }: TutorReviewModalProps) => 
       console.error(err);
     }
   };
-
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Leave a Review</DialogTitle>
+        <DialogTitle>
+  {review ? "Edit Your Review" : "Leave a Review"}
+</DialogTitle>
+
         </DialogHeader>
 
         <Form {...form}>
