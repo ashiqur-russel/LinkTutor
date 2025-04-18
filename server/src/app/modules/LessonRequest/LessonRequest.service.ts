@@ -74,7 +74,7 @@ const createLessonRequest = async (payload: ILessonRequest) => {
     if (existingRequest) {
       throw new AppError(
         StatusCodes.CONFLICT,
-        `The tutor is already booked for this time slot by another student for a different subject.`
+        `The tutor is not available on this selected time!.`
       );
     }
 
@@ -150,7 +150,12 @@ const getMyLessonRequest = async (
     filter = { tutorId: userId };
   }
 
-  const lessonQuery = new QueryBuilder(LessonRequest.find(filter), query)
+  const lessonQuery = new QueryBuilder(
+    LessonRequest.find(filter)
+      .populate("tutorId", "name _id")
+      .populate("studentId", "name _id"),
+    query
+  )
     .filter()
     .sort()
     .paginate()
