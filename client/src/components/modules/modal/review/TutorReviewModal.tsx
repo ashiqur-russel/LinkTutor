@@ -24,7 +24,6 @@ import * as z from "zod";
 import Rating from "@/components/ui/Rating";
 import { addReviewForTutor } from "@/services/ReviewService";
 
-
 const reviewSchema = z.object({
   rating: z.number().min(1, "Rating is required"),
   comment: z.string().min(1, "Comment is required"),
@@ -36,39 +35,53 @@ type TutorReviewModalProps = {
   tutorId: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  review?: {
+    _id: string;
+    rating: number;
+    comment: string;
+  };
+  onSubmit?: (data: { rating: number; comment: string }) => Promise<void>;
 };
 
-const TutorReviewModal = ({ tutorId, open, setOpen }: TutorReviewModalProps) => {
+const TutorReviewModal = ({
+  tutorId,
+  open,
+  setOpen,
+  review,
+  onSubmit,
+}: TutorReviewModalProps) => {
   const form = useForm<ReviewFormType>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
-      rating: 0,
-      comment: "",
+      rating: review?.rating ?? 0,
+      comment: review?.comment ?? "",
     },
   });
 
   const { isSubmitting } = form.formState;
 
-  const onSubmit = async (data: ReviewFormType) => {
-    console.log(data)
+  const handleSubmit = async (data: ReviewFormType) => {
+    const payload = {
+      rating: Number(data.rating),
+      comment: data.comment,
+    };
+
     try {
-        const reviewData = {
-            rating: Number(data.rating),
-            comment: data.comment,
-        };
-
-      const res = await addReviewForTutor(tutorId, reviewData);
-
-
-      if (res.success) {
-        toast.success("Review submitted successfully!");
-        form.reset();
-        setOpen(false);
+      if (onSubmit) {
+        await onSubmit(payload);
       } else {
-        toast.error(res.message || "Something went wrong.");
+        const res = await addReviewForTutor(tutorId, payload);
+
+        if (!res.success) {
+          throw new Error(res.message || "Submission failed");
+        }
       }
-    } catch (err) {
-      toast.error("Server error. Try again later.");
+
+      toast.success(`Review ${review ? "updated" : "submitted"} successfully!`);
+      form.reset();
+      setOpen(false);
+    } catch (err: any) {
+      toast.error(err.message || "Server error. Try again later.");
       console.error(err);
     }
   };
@@ -77,22 +90,18 @@ const TutorReviewModal = ({ tutorId, open, setOpen }: TutorReviewModalProps) => 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Leave a Review</DialogTitle>
+          <DialogTitle>{review ? "Edit Your Review" : "Leave a Review"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="rating"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Rating
-                      value={field.value}
-                      onChange={field.onChange}
-                      max={5}
-                    />
+                    <Rating value={field.value} onChange={field.onChange} max={5} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

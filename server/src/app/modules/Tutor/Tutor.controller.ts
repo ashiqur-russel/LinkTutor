@@ -30,7 +30,6 @@ const getTutorInfo = catchAsync(async (req, res) => {
 
 
 const getStudentTutorsList = catchAsync(async (req, res) => {
-console.log("getStudentTutorsList")
   const {userId} = req.user;
   const result = await TutorServices.getStudentTutorsList(userId);
 

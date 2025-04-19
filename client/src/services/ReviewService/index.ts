@@ -1,6 +1,7 @@
 "use server";
 
 import { getValidTokenWithCookie } from "@/actions/refreshToken";
+import { revalidateTag } from "next/cache";
 export const fetchReviewByStudent = async (
     userId: string,
     page?: string,
@@ -17,6 +18,7 @@ export const fetchReviewByStudent = async (
             "Content-Type": "application/json",
             Authorization: token,
           },
+          next: { tags: ['review-list'] },
         }
       );
       const data = await res.json();
@@ -42,6 +44,7 @@ export const fetchAllReviewByStudentId = async (
           "Content-Type": "application/json",
           Authorization: token,
         },
+        next: { tags: ['review-list'] },
       }
     );
     const data = await res.json();
@@ -58,14 +61,14 @@ export const addReviewForTutor = async( tutorId: string,reviewData:{rating:numbe
     try {
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/review/${tutorId}`,
-            {
+            `${process.env.NEXT_PUBLIC_BASE_API}/review/${tutorId}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: token,
               },
-                body: JSON.stringify(reviewData),
+              body: JSON.stringify(reviewData),
+              next: { tags: ['review-list'] },
             }
           );
           const data = await res.json();
@@ -95,3 +98,35 @@ export const fetchTutorReviews = async (tutorId: string) =>{
         console.error("Error fetching lesson requests:", error);       
     }
 }
+
+
+export const updateTutorReview = async (
+  reviewId: string,
+  review: { rating: number; comment: string },
+  page?: string,
+  limit?: string
+) => {
+  try {
+    const token = await getValidTokenWithCookie();
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API}/review/update/${reviewId}?page=${page}&limit=${limit}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(review),
+      }
+    );
+
+    const data = await res.json();
+
+    revalidateTag("review-list");
+
+    return data;
+  } catch (error) {
+    console.error("Error updating tutor review:", error);
+  }
+};

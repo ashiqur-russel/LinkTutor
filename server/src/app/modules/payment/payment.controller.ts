@@ -57,14 +57,7 @@ export const stripeWebhookHandler = async (
               lessonRequest.paymentIntentId = session.payment_intent as string;
               lessonRequest.paymentStatus = "hold";
               await lessonRequest.save();
-              console.log(
-                `Lesson request ${lessonRequestIdFromCheckout} updated after checkout completion.`
-              );
-            } else {
-              console.log(
-                `Lesson request not found for ID: ${lessonRequestIdFromCheckout}`
-              );
-            }
+            } 
           } catch (error) {
             console.error(
               "Error updating lesson request after checkout completion:",
@@ -147,9 +140,6 @@ export const stripeWebhookHandler = async (
             ) {
               lessonRequestSucceeded.paymentStatus = "paid";
               await lessonRequestSucceeded.save();
-              console.log(
-                `Lesson request ${lessonRequestIdSucceeded} updated to 'paid' due to payment_intent.succeeded.`
-              );
             }
           } catch (error) {
             console.error(
@@ -178,9 +168,6 @@ export const stripeWebhookHandler = async (
             if (lessonRequestFailed) {
               lessonRequestFailed.paymentStatus = "failed";
               await lessonRequestFailed.save();
-              console.log(
-                `Lesson request ${lessonRequestIdFailed} updated to 'failed' due to payment_intent.payment_failed.`
-              );
             }
           } catch (error) {
             console.error(
@@ -197,7 +184,6 @@ export const stripeWebhookHandler = async (
         });
         break;
       default:
-        console.log(`Unhandled event type ${event.type}`);
         sendResponse(res, {
           statusCode: StatusCodes.OK,
           success: true,
