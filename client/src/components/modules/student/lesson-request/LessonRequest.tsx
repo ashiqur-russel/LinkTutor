@@ -17,7 +17,6 @@ type LessonRequestProps = {
 const LessonRequest = ({ requests, meta }: LessonRequestProps) => {
   const [loading, setLoading] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  console.log(requests)
 
   const handleCancelRequest = async (requestId: string) => {
     if (

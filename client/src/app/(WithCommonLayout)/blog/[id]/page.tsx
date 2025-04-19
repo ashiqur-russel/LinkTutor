@@ -61,7 +61,6 @@ export default async function BlogDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const {id} = await params;
-  console.log(id)
   const post = await mockBlogPosts.find((p) => p.id === id);
 
   if (!post) return notFound();

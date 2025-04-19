@@ -83,9 +83,6 @@ export const createStripeCheckoutSession = async ({
 
 const capturePayment = async (paymentIntentId: string) => {
   try {
-    // Ensure the `paymentIntentId` is a string
-    console.log("Capturing payment with paymentIntentId:", paymentIntentId);
-
     const lessonRequest = await LessonRequest.findOne({
       paymentIntentId: paymentIntentId,
     });

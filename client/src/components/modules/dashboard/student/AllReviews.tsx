@@ -1,25 +1,57 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import LinkTutorTable from "@/components/ui/core/LinkTutorTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Review } from "@/types";
 import { Edit, Trash2 } from "lucide-react";
 import TutorReviewModal from "../../modal/review/TutorReviewModal";
+import { updateTutorReview } from "@/services/ReviewService";
+import { toast } from "sonner";
+import CommentCell from "./CommentCell";
 
 type ReviewProps = {
   reviewList: Review[];
 };
 
 const AllReviews = ({ reviewList }: ReviewProps) => {
-  const [open, setOpen] = React.useState(false);
-  const [selectedReview, setSelectedReview] = React.useState<Review | null>(null);
+  const [open, setOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const [reviews, setReviews] = useState<Review[]>(reviewList);
 
   const handleEditReview = (id: string) => {
     const review = reviewList.find((r) => r._id === id);
     if (review) {
       setSelectedReview(review);
       setOpen(true);
+    }
+  };
+
+  const handleUpdateReview = async (data: { rating: number; comment: string }) => {
+    if (!selectedReview) return;
+
+    try {
+      const res = await updateTutorReview(selectedReview._id, data);
+
+      if (res.success) {
+        toast.success("Review updated successfully");
+
+        setReviews((prev) =>
+          prev.map((r) =>
+            r._id === selectedReview._id
+              ? { ...r, ...data, rating: data.rating.toString() }
+              : r
+          )
+        );
+
+        setOpen(false);
+        setSelectedReview(null);
+      } else {
+        toast.error(res.message || "Failed to update review");
+      }
+    } catch (err) {
+      toast.error("Something went wrong while updating review");
+      console.error(err);
     }
   };
 
@@ -36,8 +68,9 @@ const AllReviews = ({ reviewList }: ReviewProps) => {
     {
       accessorKey: "comment",
       header: "Comment",
-      cell: ({ row }) => <span>{row.original.comment}</span>,
+      cell: ({ row }) => <CommentCell comment={row.original.comment} />,
     },
+    
     {
       accessorKey: "rating",
       header: "Rating",
@@ -71,12 +104,13 @@ const AllReviews = ({ reviewList }: ReviewProps) => {
   return (
     <div className="container mx-auto h-screen">
       <h1 className="text-3xl pb-7 font-sans">My Review List</h1>
-      <div className="flex" />
-      {reviewList?.length > 0 ? (
-        <LinkTutorTable columns={columns} data={reviewList} />
+
+      {reviews?.length > 0 ? (
+        <LinkTutorTable columns={columns} data={reviews} />
       ) : (
         <p>No Review yet.</p>
       )}
+
       {selectedReview && (
         <TutorReviewModal
           tutorId={selectedReview.tutorId.id}
@@ -87,6 +121,7 @@ const AllReviews = ({ reviewList }: ReviewProps) => {
             rating: Number(selectedReview.rating),
             comment: selectedReview.comment,
           }}
+          onSubmit={handleUpdateReview}
         />
       )}
     </div>

@@ -33,8 +33,6 @@ const SubjectsCard = ({ subjects }: { subjects: string[] }) => {
 
   const handleSave = async () => {
     try {
-      console.log("saved", subjectList);
-
       setIsEditing(false);
     } catch (err) {
       console.error("Failed to update subjects", err);

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ILessonRequest } from "./lessonRequest.interface";
-import { LessonRequestServices } from "./lessonRequest.service";
+import { LessonRequestServices } from "./LessonRequest.service";
 
 export const createLessonRequest = catchAsync(
   async (req: Request, res: Response) => {
@@ -98,7 +98,6 @@ const cancelessonRequest = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const acceptRequest = catchAsync(async (req: Request, res: Response) => {
-  console.log("inside accept reqiest by tutor");
   const { id } = req.params;
 
   const request = await LessonRequestServices.acceptRequest(id);
