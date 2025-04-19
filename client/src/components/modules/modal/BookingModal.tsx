@@ -30,7 +30,6 @@ const BookingModal = ({
   tutor,
   studentId,
 }: BookingModalProps) => {
-  console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState(1);
@@ -159,14 +158,12 @@ const BookingModal = ({
     
             if (result.error) {
               toast.error(result.error.message);
-              console.log(result.error.message);
             }
           } else {
             toast.error("Stripe initialization failed.");
           }
         } catch (error: any) {
           toast.error(error.message || "Booking failed. Try again.");
-          console.log(error.message);
         } finally {
           setIsSubmitting(false); 
         }

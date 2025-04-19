@@ -27,7 +27,6 @@ const renderStars = (rating: number) => {
 export default function TutorReviews( {reviews,averageRating} : TutorReviewsProps) {
   const [showAll, setShowAll] = useState(false);
   const visibleReviews = showAll ? reviews : reviews.slice(0, 2);
-  console.log('reviews', reviews)
   if (!reviews || reviews.length === 0) {   
     return (
       <div>

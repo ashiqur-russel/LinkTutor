@@ -98,8 +98,6 @@ const updateTutorRating = async (
       throw new AppError(StatusCodes.NOT_FOUND, "Tutor not found.");
     }
 
-    console.log(updatedUser);
-
     return updatedUser;
   } catch (error: any) {
     throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
@@ -122,7 +120,7 @@ const getReviewsByStudentId = async (studentId: string) => {
   try {
     const reviews = await Review.find({
       studentId: studentId,
-    }).populate("tutorId", "name  -_id");
+    }).populate("tutorId", "name");
 
     return reviews;
   } catch (error: any) {

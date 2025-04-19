@@ -208,9 +208,7 @@ const getMyUpcomingLessonRequest = async (
  * TODO: Validate tutor should be matched witht he request tutorID
  */
 const declineLessonRequest = async (requestId: string) => {
-  console.log("req id", requestId);
   const request = await LessonRequest.findById(requestId);
-  console.log("req ", request);
 
   if (!request) {
     throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
@@ -264,68 +262,6 @@ const cancelLessonRequest = async (requestId: string) => {
   return request;
 };
 
-/**
- * Tutor accepts a lesson request:
- * - Validate the request is not declined or accepted
- * - Mark it isAccepted = true
- * - Create a booking doc (via createBooking)
- * - Use a transaction for atomicity
- */
-export const acceptRequest1 = async (requestId: string) => {
-  console.log("inside accept request");
-
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
-  try {
-    const request = await LessonRequest.findById(requestId).session(session);
-    if (!request) {
-      throw new AppError(StatusCodes.NOT_FOUND, "Lesson request not found!");
-    }
-
-    if (request.isDeclined) {
-      throw new AppError(
-        StatusCodes.CONFLICT,
-        "Cannot accept a request that is already declined!"
-      );
-    }
-    if (request.isAccepted) {
-      throw new AppError(
-        StatusCodes.CONFLICT,
-        "This request is already accepted!"
-      );
-    }
-
-    request.isAccepted = true;
-    request.status = "accepted";
-    await request.save({ session });
-
-    // Create a booking using the createBooking function
-    const bookingPayload = {
-      tutorId: request.tutorId,
-      studentId: request.studentId,
-      lessonRequestId: request._id as Types.ObjectId,
-      subject: request.subject,
-      sessionDate: request.sessionDate,
-      sessionStart: request.sessionStart,
-      sessionEnd: request.sessionEnd,
-    };
-
-    const booking = await bookingServices.createBooking(
-      bookingPayload,
-      session
-    );
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return { request, booking };
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
-  }
-};
 
 const acceptRequest = async (requestId: string) => {
   const session = await mongoose.startSession();
@@ -344,7 +280,6 @@ const acceptRequest = async (requestId: string) => {
       );
     }
     if (request.isAccepted) {
-      console.log(`Request ${requestId} is already accepted.`);
       throw new AppError(
         StatusCodes.CONFLICT,
         "This request is already accepted!"

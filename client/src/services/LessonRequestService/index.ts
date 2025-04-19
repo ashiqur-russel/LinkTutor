@@ -63,7 +63,6 @@ export const createLessonRequest = async (lessonData: any) => {
   );
 
   const data = await response.json();
-  console.log(data);
 
   // if (response.status !== 201) {
   //   throw new Error(data.message || "Failed to create lesson request");

@@ -90,7 +90,6 @@ const AvailabilityCard = ({
   };
 
   const onSubmit = (data: AvailabilityFormValues) => {
-    console.log("Form data:", data);
     setOriginalValues(data);
     setIsEditing(false);
   };

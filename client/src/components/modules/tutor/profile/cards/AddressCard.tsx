@@ -28,7 +28,6 @@ const AddressCard = ({ address }: { address: Address }) => {
 
   const handleSave = async () => {
     try {
-      console.log("Save data:", formData);
       setIsEditing(false);
     } catch (error) {
       console.error(error);

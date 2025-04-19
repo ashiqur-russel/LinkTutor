@@ -26,17 +26,14 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ isActive, imageUrl }) => {
       const preview = URL.createObjectURL(selectedFile);
       setPreviewUrl(preview);
       setFile(selectedFile);
-      setIsUploaded(false); // reset when a new file is selected
+      setIsUploaded(false);
     }
   };
 
   const handleUpload = () => {
     if (!file) return;
 
-    // 👉 Replace this with your actual upload logic
-    console.log("Uploading file:", file);
-
-    // ✅ After upload is complete
+   
     setIsUploaded(true);
   };
 
@@ -79,7 +76,6 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ isActive, imageUrl }) => {
           </div>
 
           <div className="text-center space-y-2">
-            {/* Hidden file input */}
             <input
               ref={fileInputRef}
               type="file"
@@ -88,12 +84,10 @@ const AvatarCard: React.FC<AvatarCardProps> = ({ isActive, imageUrl }) => {
               className="hidden"
             />
 
-            {/* Select/Change Button */}
             <Button variant="outline" type="button" onClick={handleSelectImage}>
               {previewUrl ? "Change Image" : "Select Image"}
             </Button>
 
-            {/* Upload Button - shown only if a file is selected & not uploaded yet */}
             {file && !isUploaded && (
               <Button type="button" onClick={handleUpload} className="ml-2">
                 Upload
