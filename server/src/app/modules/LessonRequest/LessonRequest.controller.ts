@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ILessonRequest } from "./lessonRequest.interface";
-import { LessonRequestServices } from "./LessonRequest.service";
+import { LessonRequestServices } from "./lessonRequest.service";
 
 export const createLessonRequest = catchAsync(
   async (req: Request, res: Response) => {
