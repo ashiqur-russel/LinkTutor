@@ -4,7 +4,7 @@ import { useUser } from "@/context/UserContext";
 import { loginUser } from "@/services/AuthService";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Form,
@@ -17,11 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import clsx from "clsx";
 
 interface LoginFormFields {
   email: string;
@@ -32,6 +28,7 @@ const Login = () => {
   const { setUser, setIsLoading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [role, setRole] = useState<"student" | "tutor">("student");
 
   const form = useForm<LoginFormFields>({
     defaultValues: {
@@ -42,27 +39,22 @@ const Login = () => {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
     setValue,
+    formState: { isSubmitting },
   } = form;
 
   const redirectPath = searchParams.get("redirectPath");
 
-  const handleTabChange = (role: string) => {
+  // Autofill email/password based on selected role
+  useEffect(() => {
     if (role === "student") {
-      setValue("email", "alice@student.com");
-      setValue("password", "kuravisma");
+      setValue("email", process.env.NEXT_PUBLIC_STUDENT_EMAIL || "");
+      setValue("password", process.env.NEXT_PUBLIC_STUDENT_PASSWORD || "");
     } else if (role === "tutor") {
-      setValue("email", "john.tutor@example.com");
-      setValue("password", "kuravisma");
+      setValue("email", process.env.NEXT_PUBLIC_TUTOR_EMAIL || "");
+      setValue("password", process.env.NEXT_PUBLIC_TUTOR_PASSWORD || "");
     }
-  };
-
-  const handleDemoLogin = (email: string, password: string) => {
-    setValue("email", email);
-    setValue("password", password);
-    form.handleSubmit(onSubmit)();
-  };
+  }, [role, setValue]);
 
   const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
     try {
@@ -71,14 +63,17 @@ const Login = () => {
       if (res?.success) {
         toast.success(res?.message);
         setUser(res.user);
-        router.push(redirectPath || "/");
+
+        if (redirectPath) {
+          router.push(redirectPath);
+        } else {
+          router.push("/");
+        }
       } else {
         toast.error(res?.message);
       }
     } catch (err) {
       console.error("Login error:", err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -90,7 +85,28 @@ const Login = () => {
           Welcome Back!
         </h2>
 
-    
+
+        <div className="mt-4 text-center text-sm text-gray-500 mb-5">
+              try a quick demo credentials by choosing below:
+        </div>
+
+        <div className="flex justify-center mb-6 space-x-4">
+          {["student", "tutor"].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRole(r as "student" | "tutor")}
+              className={clsx(
+                "px-4 py-2 rounded-full text-sm font-semibold border transition",
+                role === r
+                  ? "bg-[#C4A046] text-white border-[#C4A046]"
+                  : "bg-white text-gray-700 border-gray-300"
+              )}
+            >
+              {r.charAt(0).toUpperCase() + r.slice(1)}
+            </button>
+          ))}
+        </div>
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -143,31 +159,17 @@ const Login = () => {
               className="w-full bg-[#C4A046] hover:bg-[#B3953D] text-white font-bold py-3 rounded-md transition"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Logging in..." : "Login now"}
+              {isSubmitting ? "Logging in..." : "Login"}
             </Button>
 
-      
-
-            <div className="text-center text-sm font-semibold text-yellow-600 mt-4">
+            <div className="text-center text-sm font-semibold text-yellow-600">
               Don&apos;t have an account yet?{" "}
               <Link href="/register/student" className="hover:underline">
                 <span className="text-yellow-500">Register now</span>
               </Link>
             </div>
 
-            <div className="mt-4 text-center text-sm text-gray-500">
-              Or try a quick demo:
-              <Tabs defaultValue="student" className="mb-4" onValueChange={handleTabChange}>
-          <TabsList className="w-full">
-            <TabsTrigger value="student" className="w-1/2">
-              Student
-            </TabsTrigger>
-            <TabsTrigger value="tutor" className="w-1/2">
-              Tutor
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-            </div>
+           
           </form>
         </Form>
       </div>
