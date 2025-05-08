@@ -7,21 +7,21 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <header className="bg-white shadow-md top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between md:px-6 lg:px-8">
+    <>
+      <header className="bg-white shadow-md top-0 z-50 ">
+        <div className=" mx-auto px-4 flex items-center justify-between md:px-6 lg:px-8 h-23">
           {/* Logo */}
           <Link href="/">
-            <span className="text-primary text-2xl font-bold cursor-pointer">
+            <span className="text-primary text-xl font-bold cursor-pointer">
               LinkTutor
             </span>
           </Link>
         </div>
       </header>
 
-      <div className="flex items-center justify-center min-h-[80vh]">
+      <div className="">
         {children}
       </div>
-    </div>
+    </>
   );
 }

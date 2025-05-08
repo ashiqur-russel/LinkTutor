@@ -1,7 +1,6 @@
 export const commonLinks = [
   { label: "HOME", href: "/" },
   { label: "ABOUT US", href: "/about-us" },
-  { label: "CONTACT", href: "#" },
   { label: "FAQ", href: "/faq" },
   { label: "BLOG", href: "/blog" },
 ];
