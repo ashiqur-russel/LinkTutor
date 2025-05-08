@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiPhone } from "react-icons/fi";
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,7 +21,11 @@ import { useUser } from "@/context/UserContext";
 import { logout } from "@/services/AuthService";
 import { isActivePath } from "@/lib/utils";
 
-export default function Navbar() {
+export default function Navbar({
+  onOpenContactModal,
+}: {
+  onOpenContactModal: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, setIsLoading } = useUser();
   const pathname = usePathname();
@@ -30,7 +34,6 @@ export default function Navbar() {
   const handleLogOut = () => {
     logout();
     setIsLoading(true);
-
     if (protectedRoutes.some((route) => pathname.match(route))) {
       router.push("/");
     }
@@ -48,7 +51,7 @@ export default function Navbar() {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="flex px-8 py-6 justify-between lg:justify-evenly">
+      <div className="flex px-8 py-6 justify-between lg:justify-evenly items-center">
         {/* Logo */}
         <Link href="/">
           <span className="text-primary text-xl font-bold cursor-pointer">
@@ -78,6 +81,18 @@ export default function Navbar() {
 
         {/* Desktop Right Section */}
         <div className="hidden md:flex md:items-center md:ml-auto">
+          {!user && (
+            <div
+              className="flex items-center space-x-4 mr-6 cursor-pointer hover:text-teal-600"
+              onClick={onOpenContactModal}
+            >
+              <div className="flex items-center">
+                <FiPhone className="mr-1 text-teal-500" />
+                <span className="text-gray-800 text-sm">Contact</span>
+                </div>
+             
+            </div>
+          )}
           {!user ? (
             <Link href="/login" className="btn-gold-outline">
               Login
@@ -113,6 +128,15 @@ export default function Navbar() {
 
         {/* Mobile Right Section */}
         <div className="flex items-center space-x-4 md:hidden">
+          {!user && (
+            <button
+              onClick={onOpenContactModal}
+              className="flex items-center hover:text-teal-600"
+            >
+              <FiPhone className="mr-1 text-teal-500" />
+              <span className="text-gray-800 text-sm">Contact</span>
+            </button>
+          )}
           {!user ? (
             <Link href="/login" className="btn-gold-outline px-3 py-1">
               Login
@@ -157,6 +181,16 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-md p-4 space-y-3 text-center">
+          <div
+            onClick={onOpenContactModal}
+            className="flex items-center justify-center cursor-pointer hover:text-teal-600"
+          >
+            <FiPhone className="mr-1 text-teal-500" />
+            <span className="text-gray-800 text-sm">0800 20 40 30 40</span>
+          </div>
+          <span className="block text-gray-500 text-sm">
+            Free hotline / Mon-Fri 9am-2pm
+          </span>
           {navLinks.map(({ label, href }) => {
             const active = isActivePath(pathname, href);
             return (
@@ -167,7 +201,7 @@ export default function Navbar() {
                   active
                     ? "text-teal-600 font-semibold after:content-[''] after:absolute after:w-full after:h-1 after:bg-teal-600 after:bottom-0 after:left-0"
                     : "text-gray-800"
-                } hover:text-teal-600`}
+                } hover:text-teal-600 block`}
               >
                 {label}
               </Link>
