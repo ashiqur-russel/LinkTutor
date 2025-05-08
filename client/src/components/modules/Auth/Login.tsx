@@ -78,16 +78,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen">
+    <div className="flex flex-col justify-start items-center min-h-screen bg-gray-100 py-16">
       <div className="p-8 rounded-lg w-full max-w-sm bg-white shadow-md">
         <h1 className="text-center text-2xl font-bold">LinkTutor</h1>
         <h2 className="text-xl font-bold text-[#1E425C] text-center mb-4">
           Welcome Back!
         </h2>
 
-
         <div className="mt-4 text-center text-sm text-gray-500 mb-5">
-              try a quick demo credentials by choosing below:
+          try a quick demo credentials by choosing below:
         </div>
 
         <div className="flex justify-center mb-6 space-x-4">
@@ -168,8 +167,6 @@ const Login = () => {
                 <span className="text-yellow-500">Register now</span>
               </Link>
             </div>
-
-           
           </form>
         </Form>
       </div>
