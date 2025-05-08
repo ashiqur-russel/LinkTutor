@@ -87,8 +87,8 @@ export default function Navbar({
               onClick={onOpenContactModal}
             >
               <div className="flex items-center">
-                <FiPhone className="mr-1 text-teal-500" />
-                <span className="text-gray-800 text-sm">Contact</span>
+                <FiPhone className="mr-1 text-teal-500 font-semibold text-xl" />
+                <span className="text-gray-800 font-sm">CONTACT</span>
                 </div>
              
             </div>
@@ -134,8 +134,8 @@ export default function Navbar({
               className="flex items-center hover:text-teal-600"
             >
               <FiPhone className="mr-1 text-teal-500" />
-              <span className="text-gray-800 text-sm">Contact</span>
-            </button>
+              <span className="text-gray-800 font-sm">CONTACT</span>
+              </button>
           )}
           {!user ? (
             <Link href="/login" className="btn-gold-outline px-3 py-1">
@@ -181,16 +181,7 @@ export default function Navbar({
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white shadow-md p-4 space-y-3 text-center">
-          <div
-            onClick={onOpenContactModal}
-            className="flex items-center justify-center cursor-pointer hover:text-teal-600"
-          >
-            <FiPhone className="mr-1 text-teal-500" />
-            <span className="text-gray-800 text-sm">0800 20 40 30 40</span>
-          </div>
-          <span className="block text-gray-500 text-sm">
-            Free hotline / Mon-Fri 9am-2pm
-          </span>
+         
           {navLinks.map(({ label, href }) => {
             const active = isActivePath(pathname, href);
             return (
