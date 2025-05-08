@@ -27,7 +27,7 @@ export default function Footer() {
               </h3>
               <ul className="space-y-1 text-gray-600">
                 <li>
-                  <Link href="/about" className="hover:text-blue-600">
+                  <Link href="/about-us" className="hover:text-blue-600">
                     About Us
                   </Link>
                 </li>
@@ -51,7 +51,7 @@ export default function Footer() {
               </h3>
               <ul className="space-y-1 text-gray-600">
                 <li>
-                  <Link href="/contact" className="hover:text-blue-600">
+                  <Link href="#" className="hover:text-blue-600">
                     Contact Us
                   </Link>
                 </li>
@@ -61,7 +61,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/help" className="hover:text-blue-600">
+                  <Link href="#" className="hover:text-blue-600">
                     Help Center
                   </Link>
                 </li>
@@ -75,17 +75,17 @@ export default function Footer() {
               </h3>
               <ul className="space-y-1 text-gray-600">
                 <li>
-                  <Link href="/terms" className="hover:text-blue-600">
+                  <Link href="#" className="hover:text-blue-600">
                     Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="hover:text-blue-600">
+                  <Link href="#" className="hover:text-blue-600">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cookies" className="hover:text-blue-600">
+                  <Link href="#" className="hover:text-blue-600">
                     Cookie Policy
                   </Link>
                 </li>
