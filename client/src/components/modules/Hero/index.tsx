@@ -1,5 +1,6 @@
 import Image from "next/image";
 import heroImage from "../../../../public/assets/hero/hero3.svg";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -14,9 +15,11 @@ const HeroSection = () => {
             With your personal learning partner, you will achieve the success
             you deserve.
           </p>
-          <button className="mt-6 btn-primary text-white px-6 py-3 rounded-md text-lg shadow-md">
-            Find a tutor now
-          </button>
+          <Link href="/tutor">
+  <button className="mt-6 btn-primary cursor-pointer text-white px-6 py-3 rounded-md text-lg shadow-md">
+    Find a tutor now
+  </button>
+</Link>
         </div>
 
         {/* Right Image Content */}
